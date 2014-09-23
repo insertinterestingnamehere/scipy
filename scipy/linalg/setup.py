@@ -118,6 +118,19 @@ def configuration(parent_package='',top_path=None):
 
     config.add_data_dir('tests')
     config.add_data_dir('benchmarks')
+    
+    config.add_data_files('f2pyptr.h')
+    
+    config.add_data_files('*.pxd')
+    
+    config.add_extension('cyblas',
+                         sources=['cyblas.c'],
+                         include_dirs=['.'])
+    
+    config.add_extension('cylapack',
+                         sources=['cylapack.c'],
+                         include_dirs=['.'])
+    
     return config
 
 if __name__ == '__main__':
