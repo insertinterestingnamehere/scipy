@@ -1,5 +1,8 @@
 from . import  blas
 
+cdef extern from "f2pyptr.h":
+    void *f2py_ptr(object) except NULL
+
 cdef:
     caxpy_t *_caxpy = <caxpy_t*>f2py_ptr(blas.caxpy._cpointer)
     ccopy_t *_ccopy = <ccopy_t*>f2py_ptr(blas.ccopy._cpointer)

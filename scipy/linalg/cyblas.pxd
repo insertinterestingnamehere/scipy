@@ -3,9 +3,6 @@ ctypedef double d
 ctypedef float complex c
 ctypedef double complex z
 
-cdef extern from "f2pyptr.h":
-    void *f2py_ptr(object) except NULL
-
 # Single precision complex routines:
 ctypedef int caxpy_t(int *n, c *ca, c *cx, int *incx, c *cy, int *incy) nogil
 ctypedef int ccopy_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil

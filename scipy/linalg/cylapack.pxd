@@ -3,9 +3,6 @@ ctypedef double d
 ctypedef float complex c
 ctypedef double complex z
 
-cdef extern from "f2pyptr.h":
-    void *f2py_ptr(object) except NULL
-
 ctypedef int cgbsv_t(int *n, int *kl, int *ku, int *nrhs, c *ab, int *ldab, int *ipiv, c *b, int *ldb, int *info) nogil
 ctypedef int cgbtrf_t(int *m, int *n, int *kl, int *ku, c *ab, int *ldab, int *ipiv, int *info) nogil
 ctypedef int cgbtrs_t(char *trans, int *n, int *kl, int *ku, int *nrhs, c *ab, int *ldab, int *ipiv, c *b, int *ldb, int *info) nogil

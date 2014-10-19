@@ -1,5 +1,8 @@
 from . import lapack
 
+cdef extern from "f2pyptr.h":
+    void *f2py_ptr(object) except NULL
+
 cdef:
     cgbsv_t *_cgbsv = <cgbsv_t*>f2py_ptr(lapack.cgbsv._cpointer)
     cgbtrf_t *_cgbtrf = <cgbtrf_t*>f2py_ptr(lapack.cgbtrf._cpointer)
