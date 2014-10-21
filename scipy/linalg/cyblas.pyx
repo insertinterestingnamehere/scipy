@@ -55,7 +55,7 @@ cdef:
     scasum_t *_scasum = <scasum_t*>f2py_ptr(blas.scasum._cpointer)
     scnrm2_t *_scnrm2 = <scnrm2_t*>f2py_ptr(blas.scnrm2._cpointer)
     scopy_t *_scopy = <scopy_t*>f2py_ptr(blas.scopy._cpointer)
-    sdot_t *_sdot = <sdot_t*>f2py_ptr(blas.sdot._cpointer)
+    sdot_t *_sdot = <sdot_t*>f2py_ptr(blas.wsdot._cpointer)
     sgemm_t *_sgemm = <sgemm_t*>f2py_ptr(blas.sgemm._cpointer)
     sgemv_t *_sgemv = <sgemv_t*>f2py_ptr(blas.sgemv._cpointer)
     sger_t *_sger = <sger_t*>f2py_ptr(blas.sger._cpointer)
