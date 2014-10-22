@@ -72,7 +72,7 @@ ctypedef int dheevr_t(char *jobz, char *range, char*uplo, int *n, d *a, int *lda
 ctypedef int dhegv_t(int *itype, char *jobz, char *uplo, int *n, d *a, int *lda, d *b, int *ldb, s *w, d *work, int *lwork, s *rwork, int *info) nogil
 ctypedef int dhegvd_t(int *itype, char *jobz, char *uplo, int *n, d *a, int *lda, d *b, int *ldb, s *w, d *work, int *lwork, s *rwork, int *lrwork, int *iwork, int *liwork, int *info) nogil
 ctypedef int dhegvx_t(int *itype, char *jobz, char *range, char *uplo, int *n, d *a, int *lda, d *b, int *ldb, s *vl, s *vu, int *il, int *iu, s *abstol, int *m, s *w, d *z, int *ldz, d *work, int *lwork, s *rwork, int *iwork, int *ifail, int *info) nogil
-ctypedef d* dlamch_t(char *cmach)
+ctypedef d dlamch_t(char *cmach)
 ctypedef int dlaswp_t(int *n, d *a, int *lda, int *k1, int *k2, int *ipiv, int *incx) nogil
 ctypedef int dlauum_t(char *uplo, int *n, d *a, int *lda, int *info) nogil
 ctypedef int dpbsv_t(char *uplo, int *n, int *kd, int *nrhs, d *ab, int *ldab, d *b, int *ldb, int *info) nogil
@@ -115,7 +115,7 @@ ctypedef int sheevr_t(char *jobz, char *range, char*uplo, int *n, s *a, int *lda
 ctypedef int shegv_t(int *itype, char *jobz, char *uplo, int *n, s *a, int *lda, s *b, int *ldb, s *w, s *work, int *lwork, s *rwork, int *info) nogil
 ctypedef int shegvd_t(int *itype, char *jobz, char *uplo, int *n, s *a, int *lda, s *b, int *ldb, s *w, s *work, int *lwork, s *rwork, int *lrwork, int *iwork, int *liwork, int *info) nogil
 ctypedef int shegvx_t(int *itype, char *jobz, char *range, char *uplo, int *n, s *a, int *lda, s *b, int *ldb, s *vl, s *vu, int *il, int *iu, s *abstol, int *m, s *w, s *z, int *ldz, s *work, int *lwork, s *rwork, int *iwork, int *ifail, int *info) nogil
-ctypedef s* slamch_t(char *cmach)
+ctypedef s slamch_t(char *cmach)
 ctypedef int slaswp_t(int *n, s *a, int *lda, int *k1, int *k2, int *ipiv, int *incx) nogil
 ctypedef int slauum_t(char *uplo, int *n, s *a, int *lda, int *info) nogil
 ctypedef int spbsv_t(char *uplo, int *n, int *kd, int *nrhs, s *ab, int *ldab, s *b, int *ldb, int *info) nogil

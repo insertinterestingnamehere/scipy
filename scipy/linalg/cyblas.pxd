@@ -6,8 +6,8 @@ ctypedef double complex z
 # Single precision complex routines:
 ctypedef int caxpy_t(int *n, c *ca, c *cx, int *incx, c *cy, int *incy) nogil
 ctypedef int ccopy_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil
-ctypedef int cdotc_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil
-ctypedef int cdotu_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil
+ctypedef c cdotc_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil
+ctypedef c cdotu_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil
 ctypedef int cgemm_t(char *transa, char *transb, int *m, int *n, int*k, c *alpha, c *a, int *lda, c *b, int *ldb, c *beta, c *c, int *ldc) nogil
 ctypedef int cgemv_t(char *trans, int *m, int *n, c *alpha, c *a, int *lda, c *x, int *incx, c *beta, c *y, int *incy) nogil
 ctypedef int cgerc_t(int *m, int *n, c *alpha, c *x, int *incx, c *y, int *incy, c *a, int *lda) nogil
@@ -25,14 +25,14 @@ ctypedef int csymm_t(char *side, char *uplo, int *m, int *n, c *alpha, c *a, int
 ctypedef int csyr2k_t(char *uplo, char *trans, int *n, int *k, c *alpha, c *a, int *lda, c *b, int *ldb, c *beta, c *c, int *ldc) nogil
 ctypedef int csyrk_t(char *uplo, char *trans, int *n, int *k, c *alpha, c *a, int *lda, c *beta, c *c, int *ldc) nogil
 ctypedef int ctrmv_t(char *uplo, char *trans, char *diag, int *n, c *a, int *lda, c *x, int *incx) nogil
-ctypedef int dasum_t(int *n, d *dx, int *incx) nogil
+ctypedef d dasum_t(int *n, d *dx, int *incx) nogil
 ctypedef int daxpy_t(int *n, d *da, d *dx, int *incx, d *dy, int *incy) nogil
 ctypedef int dcopy_t(int *n, d *dx, int *incx, d *dy, int *incy) nogil
-ctypedef int ddot_t(int *n, d *dx, int *incx, d *dy, int *incy) nogil
+ctypedef d ddot_t(int *n, d *dx, int *incx, d *dy, int *incy) nogil
 ctypedef int dgemm_t(char *transa, char *transb, int *m, int *n, int *k, d *alpha, d *a, int *lda, d *b, int *ldb, d *beta, d *c, int *ldc) nogil
 ctypedef int dgemv_t(char *trans, int *m, int *n, d *alpha, d *a, int *lda, d *x, int *incx, d *beta, d *y, int *incy) nogil
 ctypedef int dger_t(int *m, int *n, d *alpha, d *x, int *incx, d *y, int *incy, d *a, int *lda) nogil
-ctypedef int dnrm2_t(int *n, d *x, int *incx) nogil
+ctypedef d dnrm2_t(int *n, d *x, int *incx) nogil
 ctypedef int drot_t(int *n, d *dx, int *incx, d *dy, int *incy, d *c, d *s) nogil
 ctypedef int drotg_t(d *da, d *db, d *c ,d *s) nogil
 ctypedef int drotm_t(int *n, d *dx, int *incx, d *dy, int *incy, d *dparam) nogil
@@ -44,22 +44,22 @@ ctypedef int dsymv_t(char *uplo, int *n, d *alpha, d *a, int *lda, d *x, int *in
 ctypedef int dsyr2k_t(char *uplo, char *trans, int *n, int *k, d *alpha, d *a, int *lda, d *b, int *ldb, d *beta, d *c, int *ldc) nogil
 ctypedef int dsyrk_t(char *uplo, char *trans, int *n, int *k, d *alpha, d *a, int *lda, d *beta, d *c, int *ldc) nogil
 ctypedef int dtrmv_t(char *uplo, char *trans, char *diag, int *n, d *a, int *lda, d *x, int *incx) nogil
-ctypedef int dzasum_t(int *n, z *zx, int *incx) nogil
-ctypedef int dznrm2_t(int *n, z *x, int *incx) nogil
+ctypedef d dzasum_t(int *n, z *zx, int *incx) nogil
+ctypedef d dznrm2_t(int *n, z *x, int *incx) nogil
 ctypedef int icamax_t(int *n, c *cx, int *incx) nogil
 ctypedef int idamax_t(int *n, d *dx, int *incx) nogil
 ctypedef int isamax_t(int *n, s *sx, int *incx) nogil
 ctypedef int izamax_t(int *n, z *zx, int *incx) nogil
-ctypedef int sasum_t(int *n, s *sx, int *incx) nogil
+ctypedef s sasum_t(int *n, s *sx, int *incx) nogil
 ctypedef int saxpy_t(int *n, s *sa, s *sx, int *incx, s *sy, int *incy) nogil
-ctypedef int scasum_t(int *n, c *cx, int *incx) nogil
-ctypedef int scnrm2_t(int *n, c *x, int *incx) nogil
+ctypedef s scasum_t(int *n, c *cx, int *incx) nogil
+ctypedef s scnrm2_t(int *n, c *x, int *incx) nogil
 ctypedef int scopy_t(int *n, s *sx, int *incx, s *sy, int *incy) nogil
-ctypedef int sdot_t(int *n, s *sx, int *incx, s *sy, int *incy) nogil
+ctypedef s sdot_t(int *n, s *sx, int *incx, s *sy, int *incy) nogil
 ctypedef int sgemm_t(char *transa, char *transb, int *m, int *n, int *k, s *alpha, s *a, int *lda, s *b, int *ldb, s *beta, s *c, int *ldc) nogil
 ctypedef int sgemv_t(char *trans, int *m, int *n, s *alpha, s *a, int *lda, s *x, int *incx, s *beta, s *y, int *incy) nogil
 ctypedef int sger_t(int *m, int *n, s *alpha, s *x, int *incx, s *y, int *incy, s *a, int *lda) nogil
-ctypedef int snrm2_t(int *n, s *x, int *incx) nogil
+ctypedef s snrm2_t(int *n, s *x, int *incx) nogil
 ctypedef int srot_t(int *n, s *sx, int *incx, s *sy, int *incy, s *c, s *s) nogil
 ctypedef int srotg_t(s *sa, s *sb, s *c ,s *s) nogil
 ctypedef int srotm_t(int *n, s *sx, int *incx, s *sy, int *incy, s *sparam) nogil
@@ -73,8 +73,8 @@ ctypedef int ssyrk_t(char *uplo, char *trans, int *n, int *k, s *alpha, s *a, in
 ctypedef int strmv_t(char *uplo, char *trans, char *diag, int *n, s *a, int *lda, s *x, int *incx) nogil
 ctypedef int zaxpy_t(int *n, z *za, z *zx, int *incx, z *zy, int *incy) nogil
 ctypedef int zcopy_t(int *n, z *zx, int *incx, z *zy, int *incy) nogil
-ctypedef int zdotc_t(int *n, z *zx, int *incx, z *zy, int *incy) nogil
-ctypedef int zdotu_t(int *n, z *zx, int *incx, z *zy, int *incy) nogil
+ctypedef z zdotc_t(int *n, z *zx, int *incx, z *zy, int *incy) nogil
+ctypedef z zdotu_t(int *n, z *zx, int *incx, z *zy, int *incy) nogil
 ctypedef int zdrot_t(int *n, z *cx, int *incx, z *cy, int *incy, d *c, d *s) nogil
 ctypedef int zdscal_t(int *n, d *da, z *zx, int *incx) nogil
 ctypedef int zgemm_t(char *transa, char *transb, int *m, int *n, int*k, z *alpha, z *a, int *lda, z *b, int *ldb, z *beta, z *c, int *ldc) nogil
