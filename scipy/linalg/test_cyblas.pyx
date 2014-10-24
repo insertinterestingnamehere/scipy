@@ -1,39 +1,109 @@
 from scipy.linalg cimport cyblas
 import numpy as np
-from numpy.testing import TestCase, assert_array_almost_equal, assert_almost_equal
+from numpy.testing import (TestCase, assert_array_almost_equal,
+                           assert_almost_equal)
 
 class test_dgemm_pointer(TestCase):
-
+    
     def test_basic(self):
-
+        
         cdef:
             double[:,:] a, b, c
             double alpha, beta
             int lda, ldb, ldc, m, n, k
-
+        
         alpha, beta = 1., 0.
         lda = ldb = ldc = m = n = k = 2
         a = np.array([[1, 2], [3, 4]], float, order="F")
         b = np.array([[5, 6], [7, 8]], float, order="F")
         c = np.empty((2, 2), float, order="F")
+        
+        cyblas._dgemm("N", "N", &m, &n, &k, &alpha, &a[0,0],
+                      &lda, &b[0,0], &ldb, &beta, &c[0,0], &ldc)
+        
+        assert_array_almost_equal(c, np.array([[19., 22.],
+                                               [43., 50.]], float))
 
-        cyblas._dgemm("N", "N", &m, &n, &k, &alpha, &a[0,0], &lda, &b[0,0], &ldb, &beta, &c[0,0], &ldc)
-
-        assert_array_almost_equal(c, np.dot(a, b))
-
-class test_sdot_pointer(TestCase):
-
-    def test_sdot(self):
+class test_wfunc_pointers(TestCase):
+    """ Test the function pointers that are expected to fail on
+    Mac OS X without the additional entry statement in their definitions
+    in fblas_l1.pyf.src. """
+    
+    def test_complex_args(self):
+        
+        cdef:
+            float complex[:] cx, cy
+            float complex cout
+            float sout
+            int n, incx, incy
+        
+        cx = np.array([.5 + 1.j, .25 - .375j, 12.5 - 4.j], np.complex64)
+        cy = np.array([.8 + 2.j, .875 - .625j, -1. + 2.j], np.complex64)
+        
+        n, incx, incy = 3, 1, 1
+        cout = cyblas._cdotc(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(cout - (-17.6468753815+21.3718757629j)), 0., 5)
+        cout = cyblas._cdotu(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(cout - (-6.11562538147+30.3156242371j)), 0., 5)
+        sout = cyblas._scasum(&n, &cx[0], &incx)
+        assert_almost_equal(sout, 18.625, 5)
+        sout = cyblas._scnrm2(&n, &cx[0], &incx)
+        assert_almost_equal(sout, 13.1796483994, 5)
+        
+        n = incx = incy = 2
+        cout = cyblas._cdotc(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(cout - (-18.1000003815+21.2000007629j)), 0., 5)
+        cout = cyblas._cdotu(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(cout - (-6.10000038147+30.7999992371j)), 0., 5)
+        sout = cyblas._scasum(&n, &cx[0], &incx)
+        assert_almost_equal(sout, 18., 5)
+        sout = cyblas._scnrm2(&n, &cx[0], &incx)
+        assert_almost_equal(sout, 13.1719398499, 5)
+    
+    def test_float_args(self):
+        
         cdef:
             float[:] x, y
             float out
             int n, incx, incy
-
-        x = np.array([.5, 1, 2], np.float32)
+        
+        x = np.array([5., -3, -.5], np.float32)
         y = np.array([2, 1, .5], np.float32)
-        n = 3
-        incx = incy = 1
-
+        
+        n, incx, incy = 3, 1, 1
+        out = cyblas._sasum(&n, &x[0], &incx)
+        assert_almost_equal(out, 8.5, 5)
         out = cyblas._sdot(&n, &x[0], &incx, &y[0], &incy)
-
-        assert_almost_equal(out, np.inner(x, y))
+        assert_almost_equal(out, 6.75, 5)
+        out = cyblas._snrm2(&n, &x[0], &incx)
+        assert_almost_equal(out, 5.85234975815, 5)
+        
+        n = incx = incy = 2
+        out = cyblas._sasum(&n, &x[0], &incx)
+        assert_almost_equal(out, 5.5, 5)
+        out = cyblas._sdot(&n, &x[0], &incx, &y[0], &incy)
+        assert_almost_equal(out, 9.75, 5)
+        out = cyblas._snrm2(&n, &x[0], &incx)
+        assert_almost_equal(out, 5.0249376297, 5)
+    
+    def test_double_complex_args(self):
+        
+        cdef:
+            double complex[:] cx, cy
+            double complex out
+            int n, incx, incy
+        
+        cx = np.array([.5 + 1.j, .25 - .375j, 13. - 4.j], np.complex128)
+        cy = np.array([.875 + 2.j, .875 - .625j, -1. + 2.j], np.complex128)
+        
+        n, incx, incy = 3, 1, 1
+        out = cyblas._zdotc(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(out - (-18.109375+22.296875j)), 0., 5)
+        out = cyblas._zdotu(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(out - (-6.578125+31.390625j)), 0., 5)
+        
+        n = incx = incy = 2
+        out = cyblas._zdotc(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(out - (-18.5625+22.125j)), 0., 5)
+        out = cyblas._zdotu(&n, &cx[0], &incx, &cy[0], &incy)
+        assert_almost_equal(abs(out - (-6.5625+31.875j)), 0., 5)
