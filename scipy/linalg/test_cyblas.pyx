@@ -1,7 +1,6 @@
 from scipy.linalg cimport cyblas
 import numpy as np
-from numpy.testing import (TestCase, assert_array_almost_equal,
-                           assert_almost_equal)
+from numpy.testing import TestCase, assert_allclose
 
 class test_dgemm_pointer(TestCase):
     
@@ -21,8 +20,8 @@ class test_dgemm_pointer(TestCase):
         cyblas._dgemm("N", "N", &m, &n, &k, &alpha, &a[0,0],
                       &lda, &b[0,0], &ldb, &beta, &c[0,0], &ldc)
         
-        assert_array_almost_equal(c, np.array([[19., 22.],
-                                               [43., 50.]], float))
+        assert_allclose(c, np.array([[19., 22.],
+                                     [43., 50.]], float))
 
 class test_wfunc_pointers(TestCase):
     """ Test the function pointers that are expected to fail on
@@ -42,23 +41,23 @@ class test_wfunc_pointers(TestCase):
         
         n, incx, incy = 3, 1, 1
         cout = cyblas._cdotc(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(cout - (-17.6468753815+21.3718757629j)), 0., 5)
+        assert_allclose(cout, -17.6468753815+21.3718757629j, 5)
         cout = cyblas._cdotu(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(cout - (-6.11562538147+30.3156242371j)), 0., 5)
+        assert_allclose(cout, -6.11562538147+30.3156242371j, 5)
         sout = cyblas._scasum(&n, &cx[0], &incx)
-        assert_almost_equal(sout, 18.625, 5)
+        assert_allclose(sout, 18.625, 5)
         sout = cyblas._scnrm2(&n, &cx[0], &incx)
-        assert_almost_equal(sout, 13.1796483994, 5)
+        assert_allclose(sout, 13.1796483994, 5)
         
         n = incx = incy = 2
         cout = cyblas._cdotc(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(cout - (-18.1000003815+21.2000007629j)), 0., 5)
+        assert_allclose(cout, -18.1000003815+21.2000007629j, 5)
         cout = cyblas._cdotu(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(cout - (-6.10000038147+30.7999992371j)), 0., 5)
+        assert_allclose(cout, -6.10000038147+30.7999992371j, 5)
         sout = cyblas._scasum(&n, &cx[0], &incx)
-        assert_almost_equal(sout, 18., 5)
+        assert_allclose(sout, 18., 5)
         sout = cyblas._scnrm2(&n, &cx[0], &incx)
-        assert_almost_equal(sout, 13.1719398499, 5)
+        assert_allclose(sout, 13.1719398499, 5)
     
     def test_float_args(self):
         
@@ -72,19 +71,19 @@ class test_wfunc_pointers(TestCase):
         
         n, incx, incy = 3, 1, 1
         out = cyblas._sasum(&n, &x[0], &incx)
-        assert_almost_equal(out, 8.5, 5)
+        assert_allclose(out, 8.5, 5)
         out = cyblas._sdot(&n, &x[0], &incx, &y[0], &incy)
-        assert_almost_equal(out, 6.75, 5)
+        assert_allclose(out, 6.75, 5)
         out = cyblas._snrm2(&n, &x[0], &incx)
-        assert_almost_equal(out, 5.85234975815, 5)
+        assert_allclose(out, 5.85234975815, 5)
         
         n = incx = incy = 2
         out = cyblas._sasum(&n, &x[0], &incx)
-        assert_almost_equal(out, 5.5, 5)
+        assert_allclose(out, 5.5, 5)
         out = cyblas._sdot(&n, &x[0], &incx, &y[0], &incy)
-        assert_almost_equal(out, 9.75, 5)
+        assert_allclose(out, 9.75, 5)
         out = cyblas._snrm2(&n, &x[0], &incx)
-        assert_almost_equal(out, 5.0249376297, 5)
+        assert_allclose(out, 5.0249376297, 5)
     
     def test_double_complex_args(self):
         
@@ -98,12 +97,12 @@ class test_wfunc_pointers(TestCase):
         
         n, incx, incy = 3, 1, 1
         out = cyblas._zdotc(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(out - (-18.109375+22.296875j)), 0., 5)
+        assert_allclose(out, -18.109375+22.296875j, 5)
         out = cyblas._zdotu(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(out - (-6.578125+31.390625j)), 0., 5)
+        assert_allclose(out, -6.578125+31.390625j, 5)
         
         n = incx = incy = 2
         out = cyblas._zdotc(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(out - (-18.5625+22.125j)), 0., 5)
+        assert_allclose(out, -18.5625+22.125j, 5)
         out = cyblas._zdotu(&n, &cx[0], &incx, &cy[0], &incy)
-        assert_almost_equal(abs(out - (-6.5625+31.875j)), 0., 5)
+        assert_allclose(out, -6.5625+31.875j, 5)
