@@ -135,6 +135,10 @@ def configuration(parent_package='',top_path=None):
                          sources=['test_cyblas.c'],
                          include_dirs=['.'])
 
+    config.add_extension('test_cylapack',
+                         sources=['test_cylapack.c'],
+                         include_dirs=['.'])
+
     return config
 
 if __name__ == '__main__':
