@@ -8,8 +8,8 @@ class test_lamch(TestCase):
     
     def test_slamch(self):
         for c in 'esbpnrmulo':
-            assert_allclose(cylapack._slamch(c), lapack.slamch(c))
+            assert_allclose(cylapack.slamch(c), lapack.slamch(c))
     
     def test_dlamch(self):
         for c in 'esbpnrmulo':
-            assert_allclose(cylapack._slamch(c), lapack.slamch(c))
+            assert_allclose(cylapack.slamch(c), lapack.slamch(c))
