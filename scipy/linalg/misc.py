@@ -3,8 +3,9 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from numpy.linalg import LinAlgError
 from . import blas
+import os.path
 
-__all__ = ['LinAlgError', 'norm']
+__all__ = ['LinAlgError', 'norm', 'get_linalg_dir']
 
 _nrm2_prefix = {'f': 's', 'F': 'sc', 'D': 'dz'}
 
@@ -134,3 +135,28 @@ def _datacopied(arr, original):
     if not isinstance(original, np.ndarray) and hasattr(original, '__array__'):
         return False
     return arr.base is None
+
+def get_linalg_dir():
+    """
+    Return the directory containing scipy.linalg.
+    
+    This function should be used to get the proper include directory
+    to include f2pyptr.h and the cython pxd files when using the Cython
+    wrappers for BLAS and LAPACK.
+    
+    Notes
+    -----
+    When using ``distutils``, for example, in ``setup.py``.
+    ::
+    
+        from scipy.linalg import get_linalg_dir
+        ...
+        Extension('extension_name', ...
+                  include_dirs=[get_linalg_dir()])
+        ...
+    
+    """
+    # Used to get the proper include directory to include f2pyptr.h
+    # and the cython pxd files when using the Cython wrappers
+    # for BLAS and LAPACK.
+    return os.path.dirname(os.path.realpath(__file__))

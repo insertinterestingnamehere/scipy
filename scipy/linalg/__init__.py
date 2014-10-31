@@ -145,6 +145,14 @@ Low-level routines
    get_lapack_funcs
    find_best_blas_type
 
+Utility Functions
+=================
+
+.. autosummary::
+   :toctree: generated/
+   
+   get_linalg_dir - Get the directory where scipy.linalg is installed
+
 .. seealso::
 
    `scipy.linalg.blas` -- Low-level BLAS functions
