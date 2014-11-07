@@ -14,6 +14,8 @@ ctypedef int cgerc_t(int *m, int *n, c *alpha, c *x, int *incx, c *y, int *incy,
 ctypedef int cgeru_t(int *m, int *n, c *alpha, c *x, int *incx, c *y, int *incy, c *a, int *lda) nogil
 ctypedef int chemm_t(char *side, char *uplo, int *m, int *n, c *alpha, c *a, int *lda, c *b, int *ldb, c *beta, c *c, int *ldc) nogil
 ctypedef int chemv_t(char *uplo, int *n, c *alpha, c *a, int *lda, c *x, int *incx, c *beta, c *y, int *incy) nogil
+ctypedef int cher_t(char *uplo, int *n, s *alpha, c *x, int *incx, c *a, int *lda) nogil
+ctypedef int cher2_t(char *uplo, int *n, c *alpha, c *x, int *incx, c *y, int *incy, c *a, int *lda) nogil
 ctypedef int cher2k_t(char *uplo, char *trans, int *n, int *k, c *alpha, c *a, int *lda, c *b, int *ldb, s *beta, c *c, int *ldc) nogil
 ctypedef int cherk_t(char *uplo, char *trans, int *n, int *k, s *alpha, c *a, int *lda, s *beta, c *c, int *ldc) nogil
 ctypedef int crotg_t(c *ca, c *cb, s *c, c *s) nogil
@@ -22,6 +24,7 @@ ctypedef int csrot_t(int *n, c *cx, int *incx, c *cy, int *incy, s *c, s *s) nog
 ctypedef int csscal_t(int *n, s *sa, c *cx, int *incx) nogil
 ctypedef int cswap_t(int *n, c *cx, int *incx, c *cy, int *incy) nogil
 ctypedef int csymm_t(char *side, char *uplo, int *m, int *n, c *alpha, c *a, int *lda, c *b, int *ldb, c *beta, c *c, int *ldc) nogil
+ctypedef int csyr_t(char *uplo, int *n, c *alpha, c *x, int *incx, c *a, int *lda) nogil
 ctypedef int csyr2k_t(char *uplo, char *trans, int *n, int *k, c *alpha, c *a, int *lda, c *b, int *ldb, c *beta, c *c, int *ldc) nogil
 ctypedef int csyrk_t(char *uplo, char *trans, int *n, int *k, c *alpha, c *a, int *lda, c *beta, c *c, int *ldc) nogil
 ctypedef int ctrmv_t(char *uplo, char *trans, char *diag, int *n, c *a, int *lda, c *x, int *incx) nogil
@@ -41,6 +44,8 @@ ctypedef int dscal_t(int *n, d *da, d *dx, int *incx) nogil
 ctypedef int dswap_t(int *n, d *dx, int *incx, d *dy, int *incy) nogil
 ctypedef int dsymm_t(char *side, char *uplo, int *m, int *n, d *alpha, d *a, int *lda, d *b, int *ldb, d *beta, d *c, int *ldc) nogil
 ctypedef int dsymv_t(char *uplo, int *n, d *alpha, d *a, int *lda, d *x, int *incx, d *beta, d *y, int *incy) nogil
+ctypedef int dsyr_t(char *uplo, int *n, d *alpha, d *x, int *incx, d *a, int *lda) nogil
+ctypedef int dsyr2_t(char *uplo, int *n, d *alpha, d *x, int *incx, d *y, int *incy, d *a, int *lda) nogil
 ctypedef int dsyr2k_t(char *uplo, char *trans, int *n, int *k, d *alpha, d *a, int *lda, d *b, int *ldb, d *beta, d *c, int *ldc) nogil
 ctypedef int dsyrk_t(char *uplo, char *trans, int *n, int *k, d *alpha, d *a, int *lda, d *beta, d *c, int *ldc) nogil
 ctypedef int dtrmv_t(char *uplo, char *trans, char *diag, int *n, d *a, int *lda, d *x, int *incx) nogil
@@ -68,6 +73,8 @@ ctypedef int sscal_t(int *n, s *sa, s *sx, int *incx) nogil
 ctypedef int sswap_t(int *n, s *sx, int *incx, s *sy, int *incy) nogil
 ctypedef int ssymm_t(char *side, char *uplo, int *m, int *n, s *alpha, s *a, int *lda, s *b, int *ldb, s *beta, s *c, int *ldc) nogil
 ctypedef int ssymv_t(char *uplo, int *n, s *alpha, s *a, int *lda, s *x, int *incx, s *beta, s *y, int *incy) nogil
+ctypedef int ssyr_t(char *uplo, int *n, s *alpha, s *x, int *incx, s *a, int *lda) nogil
+ctypedef int ssyr2_t(char *uplo, int *n, s *alpha, s *x, int *incx, s *y, int *incy, s *a, int *lda) nogil
 ctypedef int ssyr2k_t(char *uplo, char *trans, int *n, int *k, s *alpha, s *a, int *lda, s *b, int *ldb, s *beta, s *c, int *ldc) nogil
 ctypedef int ssyrk_t(char *uplo, char *trans, int *n, int *k, s *alpha, s *a, int *lda, s *beta, s *c, int *ldc) nogil
 ctypedef int strmv_t(char *uplo, char *trans, char *diag, int *n, s *a, int *lda, s *x, int *incx) nogil
@@ -83,12 +90,15 @@ ctypedef int zgerc_t(int *m, int *n, z *alpha, z *x, int *incx, z *y, int *incy,
 ctypedef int zgeru_t(int *m, int *n, z *alpha, z *x, int *incx, z *y, int *incy, z *a, int *lda) nogil
 ctypedef int zhemm_t(char *side, char *uplo, int *m, int *n, z *alpha, z *a, int *lda, z *b, int *ldb, z *beta, z *c, int *ldc) nogil
 ctypedef int zhemv_t(char *uplo, int *n, z *alpha, z *a, int *lda, z *x, int *incx, z *beta, z *y, int *incy) nogil
+ctypedef int zher_t(char *uplo, int *n, d *alpha, z *x, int *incx, c *a, int *lda) nogil
+ctypedef int zher2_t(char *uplo, int *n, z *alpha, z *x, int *incx, z *y, int *incy, z *a, int *lda) nogil
 ctypedef int zher2k_t(char *uplo, char *trans, int *n, int *k, z *alpha, z *a, int *lda, z *b, int *ldb, d *beta, z *c, int *ldc) nogil
 ctypedef int zherk_t(char *uplo, char *trans, int *n, int *k, d *alpha, z *a, int *lda, d *beta, z *c, int *ldc) nogil
 ctypedef int zrotg_t(z *ca, z *cb, d *c, z *s) nogil
 ctypedef int zscal_t(int *n, z *za, z *zx, int *incx) nogil
 ctypedef int zswap_t(int *n, z *zx, int *incx, z *zy, int *incy) nogil
 ctypedef int zsymm_t(char *side, char *uplo, int *m, int *n, z *alpha, z *a, int *lda, z *b, int *ldb, z *beta, z *c, int *ldc) nogil
+ctypedef int zsyr_t(char *uplo, int *n, z *alpha, z *x, int *incx, z *a, int *lda) nogil
 ctypedef int zsyr2k_t(char *uplo, char *trans, int *n, int *k, z *alpha, z *a, int *lda, z *b, int *ldb, z *beta, z *c, int *ldc) nogil
 ctypedef int zsyrk_t(char *uplo, char *trans, int *n, int *k, z *alpha, z *a, int *lda, z *beta, z *c, int *ldc) nogil
 ctypedef int ztrmv_t(char *uplo, char *trans, char *diag, int *n, z *a, int *lda, z *x, int *incx) nogil
@@ -104,6 +114,8 @@ cdef:
     cgeru_t *cgeru
     chemm_t *chemm
     chemv_t *chemv
+    cher_t *cher
+    cher2_t *cher2
     cher2k_t *cher2k
     cherk_t *cherk
     crotg_t *crotg
@@ -112,6 +124,7 @@ cdef:
     csscal_t *csscal
     cswap_t *cswap
     csymm_t *csymm
+    csyr_t *csyr
     csyr2k_t *csyr2k
     csyrk_t *csyrk
     ctrmv_t *ctrmv
@@ -131,6 +144,8 @@ cdef:
     dswap_t *dswap
     dsymm_t *dsymm
     dsymv_t *dsymv
+    dsyr_t *dsyr
+    dsyr2_t *dsyr2
     dsyr2k_t *dsyr2k
     dsyrk_t *dsyrk
     dtrmv_t *dtrmv
@@ -158,6 +173,8 @@ cdef:
     sswap_t *sswap
     ssymm_t *ssymm
     ssymv_t *ssymv
+    ssyr_t *ssyr
+    ssyr2_t *ssyr2
     ssyr2k_t *ssyr2k
     ssyrk_t *ssyrk
     strmv_t *strmv
@@ -173,12 +190,15 @@ cdef:
     zgeru_t *zgeru
     zhemm_t *zhemm
     zhemv_t *zhemv
+    zher_t *zher
+    zher2_t *zher2
     zher2k_t *zher2k
     zherk_t *zherk
     zrotg_t *zrotg
     zscal_t *zscal
     zswap_t *zswap
     zsymm_t *zsymm
+    zsyr_t *zsyr
     zsyr2k_t *zsyr2k
     zsyrk_t *zsyrk
     ztrmv_t *ztrmv
