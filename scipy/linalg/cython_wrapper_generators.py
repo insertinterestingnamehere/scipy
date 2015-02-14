@@ -25,90 +25,6 @@ cdef {name}_t *{name}_f = &_fortran_{name}
 def pyx_decl_sub(name):
     return pyx_sub_template.format(name=name, upname=name.upper())
 
-pxd_template = """ctypedef {ret_type} {name}_t({args}) nogil
-cdef {name}_t *{name}_f
-"""
-
-def pxd_decl(name, ret_type, args):
-    return pxd_template.format(name=name, ret_type=ret_type, args=args)
-
-fortran_types = {'int':'integer',
-                 'c':'complex',
-                 'd':'double precision',
-                 's':'real',
-                 'z':'complex*16',
-                 'char':'character'}
-
-fortran_template = """      subroutine {name}wrapper(ret, {argnames})
-        external {wrapper}
-        {ret_type} {wrapper}
-        {ret_type} ret
-        {argdecls}
-        ret = {wrapper}({argnames})
-      end
-"""
-
-def process_fortran_name(name):
-    if 'inc' in name:
-        return name
-    if 'x' in name or 'y' in name:
-        return name + '(n)'
-    return name
-
-def fort_subroutine_wrapper(name, ret_type, args):
-    if name[0] in ['c', 's', 'z']:
-        wrapper = 'w' + name
-    else:
-        wrapper = name
-    types, names = arg_names_and_types(args)
-    argnames = ', '.join(names)
-    
-    names = [process_fortran_name(n) for n in names]
-    argdecls = '\n        '.join(['{} {}'.format(fortran_types[t], n)
-                                  for n, t in zip(names, types)])
-    return fortran_template.format(name=name, wrapper=wrapper,
-                                   argnames=argnames, argdecls=argdecls,
-                                   ret_type=fortran_types[ret_type])
-
-c_types = {'int':'int',
-           'c':'__scipy_blas_float_complex',
-           'd':'double',
-           's':'float',
-           'z':'__scipy_blas_double_complex',
-           'char':'char'}
-
-blas_pxd_preamble = """ctypedef float s
-ctypedef double d
-ctypedef float complex c
-ctypedef double complex z
-
-"""
-
-def generate_blas_pxd(all_sigs):
-    body = '\n'.join([pxd_decl(*sig) for sig in all_sigs])
-    return blas_pxd_preamble + body
-
-lapack_pxd_preamble = """ctypedef float s
-ctypedef double d
-ctypedef float complex c
-ctypedef double complex z
-
-# Function pointer type declarations for
-# gees and gges families of functions.
-ctypedef int cselect1(c*)
-ctypedef int cselect2(c*, c*)
-ctypedef int dselect2(d*, d*)
-ctypedef int dselect3(d*, d*, d*)
-ctypedef int sselect2(s*, s*)
-ctypedef int sselect3(s*, s*, s*)
-ctypedef int zselect1(z*)
-ctypedef int zselect2(z*, z*)
-
-"""
-
-def generate_lapack_pxd(all_sigs):
-    return lapack_pxd_preamble + '\n'.join([pxd_decl(*sig) for sig in all_sigs])
-
 blas_pyx_preamble = '''# cython: boundscheck = False
 # cython: wraparound = False
 # cython: cdivision = True
@@ -361,9 +277,6 @@ cpdef double complex _test_zdotu(double complex[:] zx, double complex[:] zy) nog
     return zdotu_f(&n, &zx[0], &incx, &zy[0], &incy)
 """
 
-def generate_fortran(func_sigs):
-    return "\n".join([fort_subroutine_wrapper(*sig) for sig in func_sigs])
-
 def generate_blas_pyx(func_sigs, sub_sigs, all_sigs):
     funcs = "\n".join([pyx_decl_func(*sig) for sig in func_sigs])
     subs = "\n" + "\n".join([pyx_decl_sub(sig[0]) for sig in sub_sigs])
@@ -395,6 +308,93 @@ def generate_lapack_pyx(func_sigs, sub_sigs, all_sigs):
     subs = "\n" + "\n".join([pyx_decl_sub(sig[0]) for sig in sub_sigs])
     preamble = make_lapack_pyx_preamble(all_sigs)
     return preamble + funcs + subs + lapack_py_wrappers
+
+pxd_template = """ctypedef {ret_type} {name}_t({args}) nogil
+cdef {name}_t *{name}_f
+"""
+
+def pxd_decl(name, ret_type, args):
+    return pxd_template.format(name=name, ret_type=ret_type, args=args)
+
+blas_pxd_preamble = """ctypedef float s
+ctypedef double d
+ctypedef float complex c
+ctypedef double complex z
+
+"""
+
+def generate_blas_pxd(all_sigs):
+    body = '\n'.join([pxd_decl(*sig) for sig in all_sigs])
+    return blas_pxd_preamble + body
+
+lapack_pxd_preamble = """ctypedef float s
+ctypedef double d
+ctypedef float complex c
+ctypedef double complex z
+
+# Function pointer type declarations for
+# gees and gges families of functions.
+ctypedef int cselect1(c*)
+ctypedef int cselect2(c*, c*)
+ctypedef int dselect2(d*, d*)
+ctypedef int dselect3(d*, d*, d*)
+ctypedef int sselect2(s*, s*)
+ctypedef int sselect3(s*, s*, s*)
+ctypedef int zselect1(z*)
+ctypedef int zselect2(z*, z*)
+
+"""
+
+def generate_lapack_pxd(all_sigs):
+    return lapack_pxd_preamble + '\n'.join([pxd_decl(*sig) for sig in all_sigs])
+
+fortran_types = {'int':'integer',
+                 'c':'complex',
+                 'd':'double precision',
+                 's':'real',
+                 'z':'complex*16',
+                 'char':'character'}
+
+fortran_template = """      subroutine {name}wrapper(ret, {argnames})
+        external {wrapper}
+        {ret_type} {wrapper}
+        {ret_type} ret
+        {argdecls}
+        ret = {wrapper}({argnames})
+      end
+"""
+
+def process_fortran_name(name):
+    if 'inc' in name:
+        return name
+    if 'x' in name or 'y' in name:
+        return name + '(n)'
+    return name
+
+def fort_subroutine_wrapper(name, ret_type, args):
+    if name[0] in ['c', 's', 'z']:
+        wrapper = 'w' + name
+    else:
+        wrapper = name
+    types, names = arg_names_and_types(args)
+    argnames = ', '.join(names)
+    
+    names = [process_fortran_name(n) for n in names]
+    argdecls = '\n        '.join(['{} {}'.format(fortran_types[t], n)
+                                  for n, t in zip(names, types)])
+    return fortran_template.format(name=name, wrapper=wrapper,
+                                   argnames=argnames, argdecls=argdecls,
+                                   ret_type=fortran_types[ret_type])
+
+def generate_fortran(func_sigs):
+    return "\n".join([fort_subroutine_wrapper(*sig) for sig in func_sigs])
+
+c_types = {'int':'int',
+           'c':'__scipy_blas_float_complex',
+           'd':'double',
+           's':'float',
+           'z':'__scipy_blas_double_complex',
+           'char':'char'}
 
 def split_signature(sig):
     name_and_type, args = sig[:-1].split('(')
