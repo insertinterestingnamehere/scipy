@@ -1,10 +1,33 @@
 from operator import itemgetter
 
+fortran_types = {'int':'integer',
+                 'c':'complex',
+                 'd':'double precision',
+                 's':'real',
+                 'z':'complex*16',
+                 'char':'character'}
+
+c_types = {'int':'int',
+           'c':'_scipy_linalg_float_complex',
+           'd':'double',
+           's':'float',
+           'z':'_scipy_linalg_double_complex',
+           'char':'char',
+           'cselect1':'_cselect1',
+           'cselect2':'_cselect2',
+           'dselect2':'_dselect2',
+           'dselect3':'_dselect3',
+           'sselect2':'_sselect2',
+           'sselect3':'_sselect3',
+           'zselect1':'_zselect1',
+           'zselect2':'_zselect2'}
+
 def arg_names_and_types(args):
     return zip(*[arg.split(' *') for arg in args.split(', ')])
 
 pyx_func_template = """ctypedef void _w{name}_t({ret_type} *out, {args}) nogil
-cdef extern _w{name}_t _fortran_{name} "F_FUNC({name}wrapper, {upname}WRAPPER)"
+cdef extern from "{header_name}":
+    void _fortran_{name} "F_FUNC({name}wrapper, {upname}WRAPPER)"({ret_type} *out, {args}) nogil
 cdef {ret_type} _wrap_{name}({args}) nogil:
     cdef {ret_type} out
     _fortran_{name}(&out, {argnames})
@@ -12,18 +35,21 @@ cdef {ret_type} _wrap_{name}({args}) nogil:
 cdef {name}_t *{name}_f = &_wrap_{name}
 """
 
-def pyx_decl_func(name, ret_type, args):
+def pyx_decl_func(name, ret_type, args, header_name):
     argnames = ', '.join(arg_names_and_types(args)[1])
-    return pyx_func_template.format(name=name, upname=name.upper(),
-                                    ret_type=ret_type, args=args,
-                                    argnames=argnames)
+    c_ret_type = c_types[ret_type]
+    return pyx_func_template.format(name=name, upname=name.upper(), args=args,
+                                    ret_type=ret_type, c_ret_type=c_ret_type,
+                                    argnames=argnames, header_name=header_name)
 
-pyx_sub_template = """cdef extern {name}_t _fortran_{name} "F_FUNC({name},{upname})"
+pyx_sub_template = """cdef extern from "{header_name}":
+    void _fortran_{name} "F_FUNC({name},{upname})"({args}) nogil
 cdef {name}_t *{name}_f = &_fortran_{name}
 """
 
-def pyx_decl_sub(name):
-    return pyx_sub_template.format(name=name, upname=name.upper())
+def pyx_decl_sub(name, args, header_name):
+    return pyx_sub_template.format(name=name, upname=name.upper(),
+                                   args=args, header_name=header_name)
 
 blas_pyx_preamble = '''# cython: boundscheck = False
 # cython: wraparound = False
@@ -277,9 +303,10 @@ cpdef double complex _test_zdotu(double complex[:] zx, double complex[:] zy) nog
     return zdotu_f(&n, &zx[0], &incx, &zy[0], &incy)
 """
 
-def generate_blas_pyx(func_sigs, sub_sigs, all_sigs):
-    funcs = "\n".join([pyx_decl_func(*sig) for sig in func_sigs])
-    subs = "\n" + "\n".join([pyx_decl_sub(sig[0]) for sig in sub_sigs])
+def generate_blas_pyx(func_sigs, sub_sigs, all_sigs, header_name):
+    funcs = "\n".join(pyx_decl_func(*(s+(header_name,))) for s in func_sigs)
+    subs = "\n" + "\n".join(pyx_decl_sub(*(s[::2]+(header_name,)))
+                            for s in sub_sigs)
     return make_blas_pyx_preamble(all_sigs) + funcs + subs + blas_py_wrappers
 
 lapack_py_wrappers = """
@@ -303,9 +330,10 @@ def _test_slamch(cmach):
     return slamch_f(cmach_char)
 """
 
-def generate_lapack_pyx(func_sigs, sub_sigs, all_sigs):
-    funcs = "\n".join([pyx_decl_func(*sig) for sig in func_sigs])
-    subs = "\n" + "\n".join([pyx_decl_sub(sig[0]) for sig in sub_sigs])
+def generate_lapack_pyx(func_sigs, sub_sigs, all_sigs, header_name):
+    funcs = "\n".join(pyx_decl_func(*(s+(header_name,))) for s in func_sigs)
+    subs = "\n" + "\n".join(pyx_decl_sub(*(s[::2]+(header_name,)))
+                            for s in sub_sigs)
     preamble = make_lapack_pyx_preamble(all_sigs)
     return preamble + funcs + subs + lapack_py_wrappers
 
@@ -324,7 +352,7 @@ ctypedef double complex z
 """
 
 def generate_blas_pxd(all_sigs):
-    body = '\n'.join([pxd_decl(*sig) for sig in all_sigs])
+    body = '\n'.join(pxd_decl(*sig) for sig in all_sigs)
     return blas_pxd_preamble + body
 
 lapack_pxd_preamble = """ctypedef float s
@@ -346,14 +374,7 @@ ctypedef int zselect2(z*, z*)
 """
 
 def generate_lapack_pxd(all_sigs):
-    return lapack_pxd_preamble + '\n'.join([pxd_decl(*sig) for sig in all_sigs])
-
-fortran_types = {'int':'integer',
-                 'c':'complex',
-                 'd':'double precision',
-                 's':'real',
-                 'z':'complex*16',
-                 'char':'character'}
+    return lapack_pxd_preamble + '\n'.join(pxd_decl(*sig) for sig in all_sigs)
 
 fortran_template = """      subroutine {name}wrapper(ret, {argnames})
         external {wrapper}
@@ -380,21 +401,120 @@ def fort_subroutine_wrapper(name, ret_type, args):
     argnames = ', '.join(names)
     
     names = [process_fortran_name(n) for n in names]
-    argdecls = '\n        '.join(['{} {}'.format(fortran_types[t], n)
-                                  for n, t in zip(names, types)])
+    argdecls = '\n        '.join('{} {}'.format(fortran_types[t], n)
+                                 for n, t in zip(names, types))
     return fortran_template.format(name=name, wrapper=wrapper,
                                    argnames=argnames, argdecls=argdecls,
                                    ret_type=fortran_types[ret_type])
 
 def generate_fortran(func_sigs):
-    return "\n".join([fort_subroutine_wrapper(*sig) for sig in func_sigs])
+    return "\n".join(fort_subroutine_wrapper(*sig) for sig in func_sigs)
 
-c_types = {'int':'int',
-           'c':'__scipy_blas_float_complex',
-           'd':'double',
-           's':'float',
-           'z':'__scipy_blas_double_complex',
-           'char':'char'}
+def make_c_args(args):
+    types, names = arg_names_and_types(args)
+    types = [c_types[arg] for arg in types]
+    return ', '.join('{} *{}'.format(t, n) for t, n in zip(types, names))
+
+c_func_template = "void F_FUNC({name}wrapper, {upname}WRAPPER)({return_type} *ret, {args});\n"
+
+def c_func_decl(name, return_type, args):
+    args = make_c_args(args)
+    return_type = c_types[return_type]
+    return c_func_template.format(name=name, upname=name.upper(),
+                                  return_type=return_type, args=args)
+
+c_sub_template = "void F_FUNC({name},{upname})({args});\n"
+
+def c_sub_decl(name, return_type, args):
+    args = make_c_args(args)
+    return c_sub_template.format(name=name, upname=name.upper(), args=args)
+
+c_preamble = """#ifndef SCIPY_LINALG_{lib}_FORTRAN_WRAPPERS_H
+#define SCIPY_LINALG_{lib}_FORTRAN_WRAPPERS_H
+#include "fortran_defs.h"
+"""
+
+# Mimic the complex declarations from cython
+complex_decls = """
+// Mimic the complex number definitions from cython.
+#if !defined(_SCIPY_LINALG_CCOMPLEX)
+  #if defined(__cplusplus)
+    #define _SCIPY_LINALG_CCOMPLEX 1
+  #elif defined(_Complex_I)
+    #define _SCIPY_LINALG_CCOMPLEX 1
+  #else
+    #define _SCIPY_LINALG_CCOMPLEX 0
+  #endif
+#endif
+
+#if _SCIPY_LINALG_CCOMPLEX
+  #ifdef __cplusplus
+    #include <complex>
+  #else
+    #include <complex.h>
+  #endif
+#endif
+
+#if _SCIPY_LINALG_CCOMPLEX && !defined(__cplusplus) && defined(__sun__) && defined(__GNUC__)
+  #undef _Complex_I
+  #define _Complex_I 1.0fj
+#endif
+
+#if _SCIPY_LINALG_CCOMPLEX
+  #ifdef __cplusplus
+    typedef ::std::complex< float > _scipy_linalg_float_complex;
+  #else
+    typedef float _Complex _scipy_linalg_float_complex;
+  #endif
+#else
+    typedef struct { float real, imag; } _scipy_linalg_float_complex;
+#endif
+
+#if _SCIPY_LINALG_CCOMPLEX
+  #ifdef __cplusplus
+    typedef ::std::complex< double > _scipy_linalg_double_complex;
+  #else
+    typedef double _Complex _scipy_linalg_double_complex;
+  #endif
+#else
+    typedef struct { double real, imag; } _scipy_linalg_double_complex;
+#endif
+"""
+
+lapack_decls = """
+typedef int (*_cselect1)(_scipy_linalg_float_complex*);
+typedef int (*_cselect2)(_scipy_linalg_float_complex*, _scipy_linalg_float_complex*);
+typedef int (*_dselect2)(double*, double*);
+typedef int (*_dselect3)(double*, double*, double*);
+typedef int (*_sselect2)(float*, float*);
+typedef int (*_sselect3)(float*, float*, float*);
+typedef int (*_zselect1)(_scipy_linalg_double_complex*);
+typedef int (*_zselect2)(_scipy_linalg_double_complex*, _scipy_linalg_double_complex*);
+"""
+
+cpp_guard = """
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+"""
+
+c_end = """
+#ifdef __cplusplus
+}
+#endif
+#endif
+"""
+
+def generate_c_header(func_sigs, sub_sigs, all_sigs, lib_name):
+    funcs = "".join(c_func_decl(*sig) for sig in func_sigs)
+    subs = "\n" + "".join(c_sub_decl(*sig) for sig in sub_sigs)
+    if lib_name == 'LAPACK':
+        preamble = (c_preamble.format(lib=lib_name) +
+                    complex_decls + lapack_decls)
+    else:
+        preamble = c_preamble.format(lib=lib_name) + complex_decls
+    return "".join([preamble, cpp_guard, funcs, subs, c_end])
 
 def split_signature(sig):
     name_and_type, args = sig[:-1].split('(')
@@ -413,32 +533,40 @@ def make_all(blas_signature_file="cython_blas_signatures.txt",
              lapack_signature_file="cython_lapack_signatures.txt",
              blas_name="cython_blas",
              lapack_name="cython_lapack",
-             blas_fortran_name="_blas_subroutine_wrappers.f",
-             lapack_fortran_name="_lapack_subroutine_wrappers.f"):
+             blas_fortran_name="_blas_subroutine_wrappers",
+             lapack_fortran_name="_lapack_subroutine_wrappers"):
     with open(blas_signature_file, 'r') as f:
         blas_sigs = f.readlines()
     blas_sigs = filter_lines(blas_sigs)
-    blas_pyx = generate_blas_pyx(*blas_sigs)
+    blas_header_name = blas_fortran_name + '.h'
+    blas_pyx = generate_blas_pyx(*(blas_sigs + (blas_header_name,)))
     with open(blas_name + '.pyx', 'w') as f:
         f.write(blas_pyx)
     blas_pxd = generate_blas_pxd(blas_sigs[2])
     with open(blas_name + '.pxd', 'w') as f:
         f.write(blas_pxd)
     blas_fortran = generate_fortran(blas_sigs[0])
-    with open(blas_fortran_name, 'w') as f:
+    with open(blas_fortran_name + '.f', 'w') as f:
         f.write(blas_fortran)
+    blas_c_header = generate_c_header(*(blas_sigs + ('BLAS',)))
+    with open(blas_header_name, 'w') as f:
+        f.write(blas_c_header)
     with open(lapack_signature_file, 'r') as f:
         lapack_sigs = f.readlines()
     lapack_sigs = filter_lines(lapack_sigs)
-    lapack_pyx = generate_lapack_pyx(*lapack_sigs)
+    lapack_header_name = lapack_fortran_name + '.h'
+    lapack_pyx = generate_lapack_pyx(*(lapack_sigs + (lapack_header_name,)))
     with open(lapack_name + '.pyx', 'w') as f:
         f.write(lapack_pyx)
     lapack_pxd = generate_lapack_pxd(lapack_sigs[2])
     with open(lapack_name + '.pxd', 'w') as f:
         f.write(lapack_pxd)
     lapack_fortran = generate_fortran(lapack_sigs[0])
-    with open(lapack_fortran_name, 'w') as f:
+    with open(lapack_fortran_name + '.f', 'w') as f:
         f.write(lapack_fortran)
+    lapack_c_header = generate_c_header(*(lapack_sigs + ('LAPACK',)))
+    with open(lapack_fortran_name + '.h', 'w') as f:
+        f.write(lapack_c_header)
 
 if __name__ == '__main__':
     make_all()
