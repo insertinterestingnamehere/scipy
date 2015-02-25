@@ -1,15 +1,15 @@
       subroutine dlamchwrapper(ret, cmach)
         external dlamch
         double precision dlamch
-        double precision ret(1)
+        double precision ret
         character cmach
-        ret(1) = dlamch(cmach)
+        ret = dlamch(cmach)
       end
 
       subroutine slamchwrapper(ret, cmach)
         external wslamch
         real wslamch
-        real ret(1)
+        real ret
         character cmach
-        ret(1) = wslamch(cmach)
+        ret = wslamch(cmach)
       end
