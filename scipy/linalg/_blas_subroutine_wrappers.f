@@ -1,4 +1,4 @@
-      subroutine cdotcwrapper(ret, n, cx, incx, cy, incy)
+      subroutine cdotcwrp(ret, n, cx, incx, cy, incy)
         external wcdotc
         complex wcdotc
         complex ret
@@ -10,7 +10,7 @@
         ret = wcdotc(n, cx, incx, cy, incy)
       end
 
-      subroutine cdotuwrapper(ret, n, cx, incx, cy, incy)
+      subroutine cdotuwrp(ret, n, cx, incx, cy, incy)
         external wcdotu
         complex wcdotu
         complex ret
@@ -22,7 +22,7 @@
         ret = wcdotu(n, cx, incx, cy, incy)
       end
 
-      subroutine dasumwrapper(ret, n, dx, incx)
+      subroutine dasumwrp(ret, n, dx, incx)
         external dasum
         double precision dasum
         double precision ret
@@ -32,7 +32,15 @@
         ret = dasum(n, dx, incx)
       end
 
-      subroutine ddotwrapper(ret, n, dx, incx, dy, incy)
+      subroutine dcabs1wrp(ret, z)
+        external dcabs1
+        double precision dcabs1
+        double precision ret
+        complex*16 z
+        ret = dcabs1(z)
+      end
+
+      subroutine ddotwrp(ret, n, dx, incx, dy, incy)
         external ddot
         double precision ddot
         double precision ret
@@ -44,7 +52,7 @@
         ret = ddot(n, dx, incx, dy, incy)
       end
 
-      subroutine dnrm2wrapper(ret, n, x, incx)
+      subroutine dnrm2wrp(ret, n, x, incx)
         external dnrm2
         double precision dnrm2
         double precision ret
@@ -54,7 +62,19 @@
         ret = dnrm2(n, x, incx)
       end
 
-      subroutine dzasumwrapper(ret, n, zx, incx)
+      subroutine dsdotwrp(ret, n, sx, incx, sy, incy)
+        external dsdot
+        double precision dsdot
+        double precision ret
+        integer n
+        real sx(n)
+        integer incx
+        real sy(n)
+        integer incy
+        ret = dsdot(n, sx, incx, sy, incy)
+      end
+
+      subroutine dzasumwrp(ret, n, zx, incx)
         external dzasum
         double precision dzasum
         double precision ret
@@ -64,7 +84,7 @@
         ret = dzasum(n, zx, incx)
       end
 
-      subroutine dznrm2wrapper(ret, n, x, incx)
+      subroutine dznrm2wrp(ret, n, x, incx)
         external dznrm2
         double precision dznrm2
         double precision ret
@@ -74,7 +94,7 @@
         ret = dznrm2(n, x, incx)
       end
 
-      subroutine icamaxwrapper(ret, n, cx, incx)
+      subroutine icamaxwrp(ret, n, cx, incx)
         external icamax
         integer icamax
         integer ret
@@ -84,7 +104,7 @@
         ret = icamax(n, cx, incx)
       end
 
-      subroutine idamaxwrapper(ret, n, dx, incx)
+      subroutine idamaxwrp(ret, n, dx, incx)
         external idamax
         integer idamax
         integer ret
@@ -94,7 +114,7 @@
         ret = idamax(n, dx, incx)
       end
 
-      subroutine isamaxwrapper(ret, n, sx, incx)
+      subroutine isamaxwrp(ret, n, sx, incx)
         external isamax
         integer isamax
         integer ret
@@ -104,7 +124,7 @@
         ret = isamax(n, sx, incx)
       end
 
-      subroutine izamaxwrapper(ret, n, zx, incx)
+      subroutine izamaxwrp(ret, n, zx, incx)
         external izamax
         integer izamax
         integer ret
@@ -114,7 +134,16 @@
         ret = izamax(n, zx, incx)
       end
 
-      subroutine sasumwrapper(ret, n, sx, incx)
+      subroutine lsamewrp(ret, ca, cb)
+        external lsame
+        logical lsame
+        logical ret
+        character ca
+        character cb
+        ret = lsame(ca, cb)
+      end
+
+      subroutine sasumwrp(ret, n, sx, incx)
         external wsasum
         real wsasum
         real ret
@@ -124,27 +153,35 @@
         ret = wsasum(n, sx, incx)
       end
 
-      subroutine scasumwrapper(ret, n, cx, incx)
-        external wscasum
-        real wscasum
+      subroutine scabs1wrp(ret, z)
+        external scabs1
+        real scabs1
+        real ret
+        complex z
+        ret = scabs1(z)
+      end
+
+      subroutine scasumwrp(ret, n, cx, incx)
+        external scasum
+        real scasum
         real ret
         integer n
         complex cx(n)
         integer incx
-        ret = wscasum(n, cx, incx)
+        ret = scasum(n, cx, incx)
       end
 
-      subroutine scnrm2wrapper(ret, n, x, incx)
-        external wscnrm2
-        real wscnrm2
+      subroutine scnrm2wrp(ret, n, x, incx)
+        external scnrm2
+        real scnrm2
         real ret
         integer n
         complex x(n)
         integer incx
-        ret = wscnrm2(n, x, incx)
+        ret = scnrm2(n, x, incx)
       end
 
-      subroutine sdotwrapper(ret, n, sx, incx, sy, incy)
+      subroutine sdotwrp(ret, n, sx, incx, sy, incy)
         external wsdot
         real wsdot
         real ret
@@ -156,7 +193,20 @@
         ret = wsdot(n, sx, incx, sy, incy)
       end
 
-      subroutine snrm2wrapper(ret, n, x, incx)
+      subroutine sdsdotwrp(ret, n, sb, sx, incx, sy, incy)
+        external sdsdot
+        real sdsdot
+        real ret
+        integer n
+        real sb
+        real sx(n)
+        integer incx
+        real sy(n)
+        integer incy
+        ret = sdsdot(n, sb, sx, incx, sy, incy)
+      end
+
+      subroutine snrm2wrp(ret, n, x, incx)
         external wsnrm2
         real wsnrm2
         real ret
@@ -166,7 +216,7 @@
         ret = wsnrm2(n, x, incx)
       end
 
-      subroutine zdotcwrapper(ret, n, zx, incx, zy, incy)
+      subroutine zdotcwrp(ret, n, zx, incx, zy, incy)
         external wzdotc
         complex*16 wzdotc
         complex*16 ret
@@ -178,7 +228,7 @@
         ret = wzdotc(n, zx, incx, zy, incy)
       end
 
-      subroutine zdotuwrapper(ret, n, zx, incx, zy, incy)
+      subroutine zdotuwrp(ret, n, zx, incx, zy, incy)
         external wzdotu
         complex*16 wzdotu
         complex*16 ret

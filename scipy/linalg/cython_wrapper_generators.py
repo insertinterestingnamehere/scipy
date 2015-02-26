@@ -5,7 +5,8 @@ fortran_types = {'int':'integer',
                  'd':'double precision',
                  's':'real',
                  'z':'complex*16',
-                 'char':'character'}
+                 'char':'character',
+                 'bint':'logical'}
 
 c_types = {'int':'int',
            'c':'_scipy_linalg_float_complex',
@@ -13,6 +14,7 @@ c_types = {'int':'int',
            's':'float',
            'z':'_scipy_linalg_double_complex',
            'char':'char',
+           'bint':'int',
            'cselect1':'_cselect1',
            'cselect2':'_cselect2',
            'dselect2':'_dselect2',
@@ -27,7 +29,7 @@ def arg_names_and_types(args):
 
 pyx_func_template = """ctypedef void _w{name}_t({ret_type} *out, {args}) nogil
 cdef extern from "{header_name}":
-    void _fortran_{name} "F_FUNC({name}wrapper, {upname}WRAPPER)"({ret_type} *out, {args}) nogil
+    void _fortran_{name} "F_FUNC({name}wrp, {upname}WRP)"({ret_type} *out, {args}) nogil
 cdef {ret_type} _wrap_{name}({args}) nogil:
     cdef {ret_type} out
     _fortran_{name}(&out, {argnames})
@@ -376,7 +378,7 @@ ctypedef int zselect2(z*, z*)
 def generate_lapack_pxd(all_sigs):
     return lapack_pxd_preamble + '\n'.join(pxd_decl(*sig) for sig in all_sigs)
 
-fortran_template = """      subroutine {name}wrapper(ret, {argnames})
+fortran_template = """      subroutine {name}wrp(ret, {argnames})
         external {wrapper}
         {ret_type} {wrapper}
         {ret_type} ret
@@ -395,6 +397,9 @@ def process_fortran_name(name):
 def fort_subroutine_wrapper(name, ret_type, args):
     if name[0] in ['c', 's', 'z']:
         wrapper = 'w' + name
+        if name[1:] not in ['lamch', 'dot', 'dotu', 'dotc', 'nrm2', 'asum']:
+            wrapper = name
+            print name
     else:
         wrapper = name
     types, names = arg_names_and_types(args)
@@ -415,7 +420,7 @@ def make_c_args(args):
     types = [c_types[arg] for arg in types]
     return ', '.join('{} *{}'.format(t, n) for t, n in zip(types, names))
 
-c_func_template = "void F_FUNC({name}wrapper, {upname}WRAPPER)({return_type} *ret, {args});\n"
+c_func_template = "void F_FUNC({name}wrp, {upname}WRP)({return_type} *ret, {args});\n"
 
 def c_func_decl(name, return_type, args):
     args = make_c_args(args)
@@ -521,11 +526,10 @@ def split_signature(sig):
     ret_type, name = name_and_type.split(' ')
     return name, ret_type, args
 
-def filter_lines(lines):
-    lines = [line.strip() for line in lines if line != '\n']
-    i = lines.index("# Wrapped Subroutines:")
-    func_sigs = [split_signature(l) for l in lines[:i] if l[0]!='#']
-    sub_sigs = [split_signature(l) for l in lines[i+1:] if '#' not in l]
+def filter_lines(ls):
+    ls = [l.strip() for l in ls if l != '\n' and l[0] != '#']
+    func_sigs = [split_signature(l) for l in ls if l.split(' ')[0] != 'void']
+    sub_sigs = [split_signature(l) for l in ls if l.split(' ')[0] == 'void']
     all_sigs = list(sorted(func_sigs + sub_sigs, key=itemgetter(0)))
     return func_sigs, sub_sigs, all_sigs
 
