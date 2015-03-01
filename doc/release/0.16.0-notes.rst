@@ -29,11 +29,15 @@ The benchmark suite has switched to using `Airspeed Velocity
 run the suite locally via ``python runtests.py --bench``. For more
 details, see ``benchmarks/README.rst``.
 
-
 `scipy.linalg` improvements
 ---------------------------
 
 The function `scipy.linalg.invpascal` computes the inverse of a Pascal matrix.
+
+A full set of Cython wrappers for BLAS and LAPACK has been added in the
+modules ``scipy.linalg.cython_blas` and ``scipy.linalg.cython_lapack`.
+In Cython, these wrappers can now be cimported from their corresponding
+modules and used without linking directly against BLAS or LAPACK.
 
 `scipy.signal` improvements
 ---------------------------
