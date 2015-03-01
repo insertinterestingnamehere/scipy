@@ -79,21 +79,13 @@
       end
 
       subroutine scsum1wrp(ret, n, cx, incx)
-        external scsum1
-        real scsum1
+        external wscsum1
+        real wscsum1
         real ret
         integer n
         complex cx(n)
         integer incx
-        ret = scsum1(n, cx, incx)
-      end
-
-      subroutine sisnanwrp(ret, sin)
-        external sisnan
-        logical sisnan
-        logical ret
-        real sin
-        ret = sisnan(sin)
+        ret = wscsum1(n, cx, incx)
       end
 
       subroutine slamchwrp(ret, cmach)

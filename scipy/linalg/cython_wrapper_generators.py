@@ -397,9 +397,9 @@ def process_fortran_name(name):
 def fort_subroutine_wrapper(name, ret_type, args):
     if name[0] in ['c', 's', 'z']:
         wrapper = 'w' + name
-        if name[1:] not in ['lamch', 'dot', 'dotu', 'dotc', 'nrm2', 'asum']:
-            wrapper = name
-            print name
+        #if name[1:] not in ['lamch', 'dot', 'dotu', 'dotc', 'nrm2', 'asum']:
+        #    wrapper = name
+        #    print name
     else:
         wrapper = name
     types, names = arg_names_and_types(args)
@@ -529,6 +529,10 @@ def split_signature(sig):
 def filter_lines(ls):
     ls = [l.strip() for l in ls if l != '\n' and l[0] != '#']
     func_sigs = [split_signature(l) for l in ls if l.split(' ')[0] != 'void']
+    # Remove scabs1 and sisnan.
+    # This avoids having to extend the abi wrappers.
+    # Really anyone who uses this should call the C standard library anyway...
+    func_sigs = [s for s in func_sigs if s[0] not in ['scabs1', 'sisnan']]
     sub_sigs = [split_signature(l) for l in ls if l.split(' ')[0] == 'void']
     all_sigs = list(sorted(func_sigs + sub_sigs, key=itemgetter(0)))
     return func_sigs, sub_sigs, all_sigs

@@ -153,32 +153,24 @@
         ret = wsasum(n, sx, incx)
       end
 
-      subroutine scabs1wrp(ret, z)
-        external scabs1
-        real scabs1
-        real ret
-        complex z
-        ret = scabs1(z)
-      end
-
       subroutine scasumwrp(ret, n, cx, incx)
-        external scasum
-        real scasum
+        external wscasum
+        real wscasum
         real ret
         integer n
         complex cx(n)
         integer incx
-        ret = scasum(n, cx, incx)
+        ret = wscasum(n, cx, incx)
       end
 
       subroutine scnrm2wrp(ret, n, x, incx)
-        external scnrm2
-        real scnrm2
+        external wscnrm2
+        real wscnrm2
         real ret
         integer n
         complex x(n)
         integer incx
-        ret = scnrm2(n, x, incx)
+        ret = wscnrm2(n, x, incx)
       end
 
       subroutine sdotwrp(ret, n, sx, incx, sy, incy)
@@ -194,8 +186,8 @@
       end
 
       subroutine sdsdotwrp(ret, n, sb, sx, incx, sy, incy)
-        external sdsdot
-        real sdsdot
+        external wsdsdot
+        real wsdsdot
         real ret
         integer n
         real sb
@@ -203,7 +195,7 @@
         integer incx
         real sy(n)
         integer incy
-        ret = sdsdot(n, sb, sx, incx, sy, incy)
+        ret = wsdsdot(n, sb, sx, incx, sy, incy)
       end
 
       subroutine snrm2wrp(ret, n, x, incx)

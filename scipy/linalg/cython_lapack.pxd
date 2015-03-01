@@ -1619,9 +1619,6 @@ cdef shsein_t *shsein_f
 ctypedef void shseqr_t(char *job, char *compz, int *n, int *ilo, int *ihi, s *h, int *ldh, s *wr, s *wi, s *z, int *ldz, s *work, int *lwork, int *info) nogil
 cdef shseqr_t *shseqr_f
 
-ctypedef bint sisnan_t(s *sin) nogil
-cdef sisnan_t *sisnan_f
-
 ctypedef void slacn2_t(int *n, s *v, s *x, int *isgn, s *est, int *kase, int *isave) nogil
 cdef slacn2_t *slacn2_f
 

@@ -240,9 +240,6 @@ cdef sasum_t *sasum_f
 ctypedef void saxpy_t(int *n, s *sa, s *sx, int *incx, s *sy, int *incy) nogil
 cdef saxpy_t *saxpy_f
 
-ctypedef s scabs1_t(c *z) nogil
-cdef scabs1_t *scabs1_f
-
 ctypedef s scasum_t(int *n, c *cx, int *incx) nogil
 cdef scasum_t *scasum_f
 
