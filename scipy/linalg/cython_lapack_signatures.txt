@@ -533,7 +533,6 @@ void sgtts2(int *itrans, int *n, int *nrhs, s *dl, s *d, s *du, s *du2, int *ipi
 void shgeqz(char *job, char *compq, char *compz, int *n, int *ilo, int *ihi, s *h, int *ldh, s *t, int *ldt, s *alphar, s *alphai, s *beta, s *q, int *ldq, s *z, int *ldz, s *work, int *lwork, int *info)
 void shsein(char *job, char *eigsrc, char *initv, int *select, int *n, s *h, int *ldh, s *wr, s *wi, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *ifaill, int *ifailr, int *info)
 void shseqr(char *job, char *compz, int *n, int *ilo, int *ihi, s *h, int *ldh, s *wr, s *wi, s *z, int *ldz, s *work, int *lwork, int *info)
-bint sisnan(s *sin)
 void slacn2(int *n, s *v, s *x, int *isgn, s *est, int *kase, int *isave)
 s slamch(char *cmach)
 void slaswp(int *n, s *a, int *lda, int *k1, int *k2, int *ipiv, int *incx)
