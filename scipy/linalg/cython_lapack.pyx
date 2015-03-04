@@ -6,6 +6,13 @@ Usable from Cython via::
 
     cimport scipy.linalg.cython_lapack
 
+This module provides Cython-level wrappers for all primary routines included
+in LAPACK 3.1.0 and some of the fixed-api auxiliary routines.
+
+The signature for dcgesv changed from LAPACK 3.1.1 to LAPACK 3.2.0.
+The version here is the newer of the two since it matches the signature
+from later versions of LAPACK and the version in the CLAPACK included in OSX.
+
 Raw function pointers (Fortran-style pointer arguments):
 
 - cbdsqr
@@ -124,6 +131,23 @@ Raw function pointers (Fortran-style pointer arguments):
 - chsein
 - chseqr
 - clacn2
+- clacon
+- clangb
+- clange
+- clangt
+- clanhb
+- clanhe
+- clanhp
+- clanhs
+- clanht
+- clansb
+- clansp
+- clansy
+- clantb
+- clantp
+- clantr
+- clarf
+- clarz
 - claswp
 - clauum
 - cpbcon
@@ -316,7 +340,22 @@ Raw function pointers (Fortran-style pointer arguments):
 - dhseqr
 - disnan
 - dlacn2
+- dlacon
 - dlamch
+- dlangb
+- dlange
+- dlangt
+- dlanhs
+- dlansb
+- dlansp
+- dlanst
+- dlansy
+- dlantb
+- dlantp
+- dlantr
+- dlanv2
+- dlarf
+- dlarz
 - dlaswp
 - dlauum
 - dopgtr
@@ -464,6 +503,7 @@ Raw function pointers (Fortran-style pointer arguments):
 - dzsum1
 - icmax1
 - ieeeck
+- ilaenv
 - iparmq
 - izmax1
 - lsamen
@@ -544,7 +584,22 @@ Raw function pointers (Fortran-style pointer arguments):
 - shsein
 - shseqr
 - slacn2
+- slacon
 - slamch
+- slangb
+- slange
+- slangt
+- slanhs
+- slansb
+- slansp
+- slanst
+- slansy
+- slantb
+- slantp
+- slantr
+- slanv2
+- slarf
+- slarz
 - slaswp
 - slauum
 - sopgtr
@@ -807,6 +862,23 @@ Raw function pointers (Fortran-style pointer arguments):
 - zhsein
 - zhseqr
 - zlacn2
+- zlacon
+- zlangb
+- zlange
+- zlangt
+- zlanhb
+- zlanhe
+- zlanhp
+- zlanhs
+- zlanht
+- zlansb
+- zlansp
+- zlansy
+- zlantb
+- zlantp
+- zlantr
+- zlarf
+- zlarz
 - zlaswp
 - zlauum
 - zpbcon
@@ -928,6 +1000,132 @@ Raw function pointers (Fortran-style pointer arguments):
 cdef extern from "fortran_defs.h":
     pass
 
+ctypedef void _wclangb_t(s *out, char *norm, int *n, int *kl, int *ku, c *ab, int *ldab, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clangb "F_FUNC(clangbwrp, CLANGBWRP)"(s *out, char *norm, int *n, int *kl, int *ku, c *ab, int *ldab, s *work) nogil
+cdef s _wrap_clangb(char *norm, int *n, int *kl, int *ku, c *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_clangb(&out, norm, n, kl, ku, ab, ldab, work)
+    return out
+cdef clangb_t *clangb_f = &_wrap_clangb
+
+ctypedef void _wclange_t(s *out, char *norm, int *m, int *n, c *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clange "F_FUNC(clangewrp, CLANGEWRP)"(s *out, char *norm, int *m, int *n, c *a, int *lda, s *work) nogil
+cdef s _wrap_clange(char *norm, int *m, int *n, c *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_clange(&out, norm, m, n, a, lda, work)
+    return out
+cdef clange_t *clange_f = &_wrap_clange
+
+ctypedef void _wclangt_t(s *out, char *norm, int *n, c *dl, c *d, c *du) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clangt "F_FUNC(clangtwrp, CLANGTWRP)"(s *out, char *norm, int *n, c *dl, c *d, c *du) nogil
+cdef s _wrap_clangt(char *norm, int *n, c *dl, c *d, c *du) nogil:
+    cdef s out
+    _fortran_clangt(&out, norm, n, dl, d, du)
+    return out
+cdef clangt_t *clangt_f = &_wrap_clangt
+
+ctypedef void _wclanhb_t(s *out, char *norm, char *uplo, int *n, int *k, c *ab, int *ldab, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clanhb "F_FUNC(clanhbwrp, CLANHBWRP)"(s *out, char *norm, char *uplo, int *n, int *k, c *ab, int *ldab, s *work) nogil
+cdef s _wrap_clanhb(char *norm, char *uplo, int *n, int *k, c *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_clanhb(&out, norm, uplo, n, k, ab, ldab, work)
+    return out
+cdef clanhb_t *clanhb_f = &_wrap_clanhb
+
+ctypedef void _wclanhe_t(s *out, char *norm, char *uplo, int *n, c *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clanhe "F_FUNC(clanhewrp, CLANHEWRP)"(s *out, char *norm, char *uplo, int *n, c *a, int *lda, s *work) nogil
+cdef s _wrap_clanhe(char *norm, char *uplo, int *n, c *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_clanhe(&out, norm, uplo, n, a, lda, work)
+    return out
+cdef clanhe_t *clanhe_f = &_wrap_clanhe
+
+ctypedef void _wclanhp_t(s *out, char *norm, char *uplo, int *n, c *ap, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clanhp "F_FUNC(clanhpwrp, CLANHPWRP)"(s *out, char *norm, char *uplo, int *n, c *ap, s *work) nogil
+cdef s _wrap_clanhp(char *norm, char *uplo, int *n, c *ap, s *work) nogil:
+    cdef s out
+    _fortran_clanhp(&out, norm, uplo, n, ap, work)
+    return out
+cdef clanhp_t *clanhp_f = &_wrap_clanhp
+
+ctypedef void _wclanhs_t(s *out, char *norm, int *n, c *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clanhs "F_FUNC(clanhswrp, CLANHSWRP)"(s *out, char *norm, int *n, c *a, int *lda, s *work) nogil
+cdef s _wrap_clanhs(char *norm, int *n, c *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_clanhs(&out, norm, n, a, lda, work)
+    return out
+cdef clanhs_t *clanhs_f = &_wrap_clanhs
+
+ctypedef void _wclanht_t(s *out, char *norm, int *n, s *d, c *e) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clanht "F_FUNC(clanhtwrp, CLANHTWRP)"(s *out, char *norm, int *n, s *d, c *e) nogil
+cdef s _wrap_clanht(char *norm, int *n, s *d, c *e) nogil:
+    cdef s out
+    _fortran_clanht(&out, norm, n, d, e)
+    return out
+cdef clanht_t *clanht_f = &_wrap_clanht
+
+ctypedef void _wclansb_t(s *out, char *norm, char *uplo, int *n, int *k, c *ab, int *ldab, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clansb "F_FUNC(clansbwrp, CLANSBWRP)"(s *out, char *norm, char *uplo, int *n, int *k, c *ab, int *ldab, s *work) nogil
+cdef s _wrap_clansb(char *norm, char *uplo, int *n, int *k, c *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_clansb(&out, norm, uplo, n, k, ab, ldab, work)
+    return out
+cdef clansb_t *clansb_f = &_wrap_clansb
+
+ctypedef void _wclansp_t(s *out, char *norm, char *uplo, int *n, c *ap, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clansp "F_FUNC(clanspwrp, CLANSPWRP)"(s *out, char *norm, char *uplo, int *n, c *ap, s *work) nogil
+cdef s _wrap_clansp(char *norm, char *uplo, int *n, c *ap, s *work) nogil:
+    cdef s out
+    _fortran_clansp(&out, norm, uplo, n, ap, work)
+    return out
+cdef clansp_t *clansp_f = &_wrap_clansp
+
+ctypedef void _wclansy_t(s *out, char *norm, char *uplo, int *n, c *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clansy "F_FUNC(clansywrp, CLANSYWRP)"(s *out, char *norm, char *uplo, int *n, c *a, int *lda, s *work) nogil
+cdef s _wrap_clansy(char *norm, char *uplo, int *n, c *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_clansy(&out, norm, uplo, n, a, lda, work)
+    return out
+cdef clansy_t *clansy_f = &_wrap_clansy
+
+ctypedef void _wclantb_t(s *out, char *norm, char *uplo, char *diag, int *n, int *k, c *ab, int *ldab, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clantb "F_FUNC(clantbwrp, CLANTBWRP)"(s *out, char *norm, char *uplo, char *diag, int *n, int *k, c *ab, int *ldab, s *work) nogil
+cdef s _wrap_clantb(char *norm, char *uplo, char *diag, int *n, int *k, c *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_clantb(&out, norm, uplo, diag, n, k, ab, ldab, work)
+    return out
+cdef clantb_t *clantb_f = &_wrap_clantb
+
+ctypedef void _wclantp_t(s *out, char *norm, char *uplo, char *diag, int *n, c *ap, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clantp "F_FUNC(clantpwrp, CLANTPWRP)"(s *out, char *norm, char *uplo, char *diag, int *n, c *ap, s *work) nogil
+cdef s _wrap_clantp(char *norm, char *uplo, char *diag, int *n, c *ap, s *work) nogil:
+    cdef s out
+    _fortran_clantp(&out, norm, uplo, diag, n, ap, work)
+    return out
+cdef clantp_t *clantp_f = &_wrap_clantp
+
+ctypedef void _wclantr_t(s *out, char *norm, char *uplo, char *diag, int *m, int *n, c *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clantr "F_FUNC(clantrwrp, CLANTRWRP)"(s *out, char *norm, char *uplo, char *diag, int *m, int *n, c *a, int *lda, s *work) nogil
+cdef s _wrap_clantr(char *norm, char *uplo, char *diag, int *m, int *n, c *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_clantr(&out, norm, uplo, diag, m, n, a, lda, work)
+    return out
+cdef clantr_t *clantr_f = &_wrap_clantr
+
 ctypedef void _wdisnan_t(bint *out, d *din) nogil
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_disnan "F_FUNC(disnanwrp, DISNANWRP)"(bint *out, d *din) nogil
@@ -945,6 +1143,105 @@ cdef d _wrap_dlamch(char *cmach) nogil:
     _fortran_dlamch(&out, cmach)
     return out
 cdef dlamch_t *dlamch_f = &_wrap_dlamch
+
+ctypedef void _wdlangb_t(d *out, char *norm, int *n, int *kl, int *ku, d *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlangb "F_FUNC(dlangbwrp, DLANGBWRP)"(d *out, char *norm, int *n, int *kl, int *ku, d *ab, int *ldab, d *work) nogil
+cdef d _wrap_dlangb(char *norm, int *n, int *kl, int *ku, d *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_dlangb(&out, norm, n, kl, ku, ab, ldab, work)
+    return out
+cdef dlangb_t *dlangb_f = &_wrap_dlangb
+
+ctypedef void _wdlange_t(d *out, char *norm, int *m, int *n, d *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlange "F_FUNC(dlangewrp, DLANGEWRP)"(d *out, char *norm, int *m, int *n, d *a, int *lda, d *work) nogil
+cdef d _wrap_dlange(char *norm, int *m, int *n, d *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_dlange(&out, norm, m, n, a, lda, work)
+    return out
+cdef dlange_t *dlange_f = &_wrap_dlange
+
+ctypedef void _wdlangt_t(d *out, char *norm, int *n, d *dl, d *d, d *du) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlangt "F_FUNC(dlangtwrp, DLANGTWRP)"(d *out, char *norm, int *n, d *dl, d *d, d *du) nogil
+cdef d _wrap_dlangt(char *norm, int *n, d *dl, d *d, d *du) nogil:
+    cdef d out
+    _fortran_dlangt(&out, norm, n, dl, d, du)
+    return out
+cdef dlangt_t *dlangt_f = &_wrap_dlangt
+
+ctypedef void _wdlanhs_t(d *out, char *norm, int *n, d *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlanhs "F_FUNC(dlanhswrp, DLANHSWRP)"(d *out, char *norm, int *n, d *a, int *lda, d *work) nogil
+cdef d _wrap_dlanhs(char *norm, int *n, d *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_dlanhs(&out, norm, n, a, lda, work)
+    return out
+cdef dlanhs_t *dlanhs_f = &_wrap_dlanhs
+
+ctypedef void _wdlansb_t(d *out, char *norm, char *uplo, int *n, int *k, d *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlansb "F_FUNC(dlansbwrp, DLANSBWRP)"(d *out, char *norm, char *uplo, int *n, int *k, d *ab, int *ldab, d *work) nogil
+cdef d _wrap_dlansb(char *norm, char *uplo, int *n, int *k, d *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_dlansb(&out, norm, uplo, n, k, ab, ldab, work)
+    return out
+cdef dlansb_t *dlansb_f = &_wrap_dlansb
+
+ctypedef void _wdlansp_t(d *out, char *norm, char *uplo, int *n, d *ap, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlansp "F_FUNC(dlanspwrp, DLANSPWRP)"(d *out, char *norm, char *uplo, int *n, d *ap, d *work) nogil
+cdef d _wrap_dlansp(char *norm, char *uplo, int *n, d *ap, d *work) nogil:
+    cdef d out
+    _fortran_dlansp(&out, norm, uplo, n, ap, work)
+    return out
+cdef dlansp_t *dlansp_f = &_wrap_dlansp
+
+ctypedef void _wdlanst_t(d *out, char *norm, int *n, d *d, d *e) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlanst "F_FUNC(dlanstwrp, DLANSTWRP)"(d *out, char *norm, int *n, d *d, d *e) nogil
+cdef d _wrap_dlanst(char *norm, int *n, d *d, d *e) nogil:
+    cdef d out
+    _fortran_dlanst(&out, norm, n, d, e)
+    return out
+cdef dlanst_t *dlanst_f = &_wrap_dlanst
+
+ctypedef void _wdlansy_t(d *out, char *norm, char *uplo, int *n, d *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlansy "F_FUNC(dlansywrp, DLANSYWRP)"(d *out, char *norm, char *uplo, int *n, d *a, int *lda, d *work) nogil
+cdef d _wrap_dlansy(char *norm, char *uplo, int *n, d *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_dlansy(&out, norm, uplo, n, a, lda, work)
+    return out
+cdef dlansy_t *dlansy_f = &_wrap_dlansy
+
+ctypedef void _wdlantb_t(d *out, char *norm, char *uplo, char *diag, int *n, int *k, d *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlantb "F_FUNC(dlantbwrp, DLANTBWRP)"(d *out, char *norm, char *uplo, char *diag, int *n, int *k, d *ab, int *ldab, d *work) nogil
+cdef d _wrap_dlantb(char *norm, char *uplo, char *diag, int *n, int *k, d *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_dlantb(&out, norm, uplo, diag, n, k, ab, ldab, work)
+    return out
+cdef dlantb_t *dlantb_f = &_wrap_dlantb
+
+ctypedef void _wdlantp_t(d *out, char *norm, char *uplo, char *diag, int *n, d *ap, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlantp "F_FUNC(dlantpwrp, DLANTPWRP)"(d *out, char *norm, char *uplo, char *diag, int *n, d *ap, d *work) nogil
+cdef d _wrap_dlantp(char *norm, char *uplo, char *diag, int *n, d *ap, d *work) nogil:
+    cdef d out
+    _fortran_dlantp(&out, norm, uplo, diag, n, ap, work)
+    return out
+cdef dlantp_t *dlantp_f = &_wrap_dlantp
+
+ctypedef void _wdlantr_t(d *out, char *norm, char *uplo, char *diag, int *m, int *n, d *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlantr "F_FUNC(dlantrwrp, DLANTRWRP)"(d *out, char *norm, char *uplo, char *diag, int *m, int *n, d *a, int *lda, d *work) nogil
+cdef d _wrap_dlantr(char *norm, char *uplo, char *diag, int *m, int *n, d *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_dlantr(&out, norm, uplo, diag, m, n, a, lda, work)
+    return out
+cdef dlantr_t *dlantr_f = &_wrap_dlantr
 
 ctypedef void _wdzsum1_t(d *out, int *n, z *cx, int *incx) nogil
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -972,6 +1269,15 @@ cdef int _wrap_ieeeck(int *ispec, s *zero, s *one) nogil:
     _fortran_ieeeck(&out, ispec, zero, one)
     return out
 cdef ieeeck_t *ieeeck_f = &_wrap_ieeeck
+
+ctypedef void _wilaenv_t(int *out, int *ispec, char *name, char *opts, int *n1, int *n2, int *n3, int *n4) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_ilaenv "F_FUNC(ilaenvwrp, ILAENVWRP)"(int *out, int *ispec, char *name, char *opts, int *n1, int *n2, int *n3, int *n4) nogil
+cdef int _wrap_ilaenv(int *ispec, char *name, char *opts, int *n1, int *n2, int *n3, int *n4) nogil:
+    cdef int out
+    _fortran_ilaenv(&out, ispec, name, opts, n1, n2, n3, n4)
+    return out
+cdef ilaenv_t *ilaenv_f = &_wrap_ilaenv
 
 ctypedef void _wiparmq_t(int *out, int *ispec, char *name, char *opts, int *n, int *ilo, int *ihi, int *lwork) nogil
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1018,8 +1324,233 @@ cdef s _wrap_slamch(char *cmach) nogil:
     return out
 cdef slamch_t *slamch_f = &_wrap_slamch
 
+ctypedef void _wslangb_t(s *out, char *norm, int *n, int *kl, int *ku, s *ab, int *ldab, s *work) nogil
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cbdsqr "F_FUNC(cbdsqr,CBDSQR)"(char *uplo, int *n, int *ncvt, int *nru, int *ncc, s *d, s *e, c *vt, int *ldvt, c *u, int *ldu, c *c, int *ldc, s *work, int *info) nogil
+    void _fortran_slangb "F_FUNC(slangbwrp, SLANGBWRP)"(s *out, char *norm, int *n, int *kl, int *ku, s *ab, int *ldab, s *work) nogil
+cdef s _wrap_slangb(char *norm, int *n, int *kl, int *ku, s *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_slangb(&out, norm, n, kl, ku, ab, ldab, work)
+    return out
+cdef slangb_t *slangb_f = &_wrap_slangb
+
+ctypedef void _wslange_t(s *out, char *norm, int *m, int *n, s *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slange "F_FUNC(slangewrp, SLANGEWRP)"(s *out, char *norm, int *m, int *n, s *a, int *lda, s *work) nogil
+cdef s _wrap_slange(char *norm, int *m, int *n, s *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_slange(&out, norm, m, n, a, lda, work)
+    return out
+cdef slange_t *slange_f = &_wrap_slange
+
+ctypedef void _wslangt_t(s *out, char *norm, int *n, s *dl, s *d, s *du) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slangt "F_FUNC(slangtwrp, SLANGTWRP)"(s *out, char *norm, int *n, s *dl, s *d, s *du) nogil
+cdef s _wrap_slangt(char *norm, int *n, s *dl, s *d, s *du) nogil:
+    cdef s out
+    _fortran_slangt(&out, norm, n, dl, d, du)
+    return out
+cdef slangt_t *slangt_f = &_wrap_slangt
+
+ctypedef void _wslanhs_t(s *out, char *norm, int *n, s *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slanhs "F_FUNC(slanhswrp, SLANHSWRP)"(s *out, char *norm, int *n, s *a, int *lda, s *work) nogil
+cdef s _wrap_slanhs(char *norm, int *n, s *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_slanhs(&out, norm, n, a, lda, work)
+    return out
+cdef slanhs_t *slanhs_f = &_wrap_slanhs
+
+ctypedef void _wslansb_t(s *out, char *norm, char *uplo, int *n, int *k, s *ab, int *ldab, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slansb "F_FUNC(slansbwrp, SLANSBWRP)"(s *out, char *norm, char *uplo, int *n, int *k, s *ab, int *ldab, s *work) nogil
+cdef s _wrap_slansb(char *norm, char *uplo, int *n, int *k, s *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_slansb(&out, norm, uplo, n, k, ab, ldab, work)
+    return out
+cdef slansb_t *slansb_f = &_wrap_slansb
+
+ctypedef void _wslansp_t(s *out, char *norm, char *uplo, int *n, s *ap, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slansp "F_FUNC(slanspwrp, SLANSPWRP)"(s *out, char *norm, char *uplo, int *n, s *ap, s *work) nogil
+cdef s _wrap_slansp(char *norm, char *uplo, int *n, s *ap, s *work) nogil:
+    cdef s out
+    _fortran_slansp(&out, norm, uplo, n, ap, work)
+    return out
+cdef slansp_t *slansp_f = &_wrap_slansp
+
+ctypedef void _wslanst_t(s *out, char *norm, int *n, s *d, s *e) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slanst "F_FUNC(slanstwrp, SLANSTWRP)"(s *out, char *norm, int *n, s *d, s *e) nogil
+cdef s _wrap_slanst(char *norm, int *n, s *d, s *e) nogil:
+    cdef s out
+    _fortran_slanst(&out, norm, n, d, e)
+    return out
+cdef slanst_t *slanst_f = &_wrap_slanst
+
+ctypedef void _wslansy_t(s *out, char *norm, char *uplo, int *n, s *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slansy "F_FUNC(slansywrp, SLANSYWRP)"(s *out, char *norm, char *uplo, int *n, s *a, int *lda, s *work) nogil
+cdef s _wrap_slansy(char *norm, char *uplo, int *n, s *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_slansy(&out, norm, uplo, n, a, lda, work)
+    return out
+cdef slansy_t *slansy_f = &_wrap_slansy
+
+ctypedef void _wslantb_t(s *out, char *norm, char *uplo, char *diag, int *n, int *k, s *ab, int *ldab, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slantb "F_FUNC(slantbwrp, SLANTBWRP)"(s *out, char *norm, char *uplo, char *diag, int *n, int *k, s *ab, int *ldab, s *work) nogil
+cdef s _wrap_slantb(char *norm, char *uplo, char *diag, int *n, int *k, s *ab, int *ldab, s *work) nogil:
+    cdef s out
+    _fortran_slantb(&out, norm, uplo, diag, n, k, ab, ldab, work)
+    return out
+cdef slantb_t *slantb_f = &_wrap_slantb
+
+ctypedef void _wslantp_t(s *out, char *norm, char *uplo, char *diag, int *n, s *ap, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slantp "F_FUNC(slantpwrp, SLANTPWRP)"(s *out, char *norm, char *uplo, char *diag, int *n, s *ap, s *work) nogil
+cdef s _wrap_slantp(char *norm, char *uplo, char *diag, int *n, s *ap, s *work) nogil:
+    cdef s out
+    _fortran_slantp(&out, norm, uplo, diag, n, ap, work)
+    return out
+cdef slantp_t *slantp_f = &_wrap_slantp
+
+ctypedef void _wslantr_t(s *out, char *norm, char *uplo, char *diag, int *m, int *n, s *a, int *lda, s *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slantr "F_FUNC(slantrwrp, SLANTRWRP)"(s *out, char *norm, char *uplo, char *diag, int *m, int *n, s *a, int *lda, s *work) nogil
+cdef s _wrap_slantr(char *norm, char *uplo, char *diag, int *m, int *n, s *a, int *lda, s *work) nogil:
+    cdef s out
+    _fortran_slantr(&out, norm, uplo, diag, m, n, a, lda, work)
+    return out
+cdef slantr_t *slantr_f = &_wrap_slantr
+
+ctypedef void _wzlangb_t(d *out, char *norm, int *n, int *kl, int *ku, z *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlangb "F_FUNC(zlangbwrp, ZLANGBWRP)"(d *out, char *norm, int *n, int *kl, int *ku, z *ab, int *ldab, d *work) nogil
+cdef d _wrap_zlangb(char *norm, int *n, int *kl, int *ku, z *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_zlangb(&out, norm, n, kl, ku, ab, ldab, work)
+    return out
+cdef zlangb_t *zlangb_f = &_wrap_zlangb
+
+ctypedef void _wzlange_t(d *out, char *norm, int *m, int *n, z *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlange "F_FUNC(zlangewrp, ZLANGEWRP)"(d *out, char *norm, int *m, int *n, z *a, int *lda, d *work) nogil
+cdef d _wrap_zlange(char *norm, int *m, int *n, z *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_zlange(&out, norm, m, n, a, lda, work)
+    return out
+cdef zlange_t *zlange_f = &_wrap_zlange
+
+ctypedef void _wzlangt_t(d *out, char *norm, int *n, z *dl, z *d, z *du) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlangt "F_FUNC(zlangtwrp, ZLANGTWRP)"(d *out, char *norm, int *n, z *dl, z *d, z *du) nogil
+cdef d _wrap_zlangt(char *norm, int *n, z *dl, z *d, z *du) nogil:
+    cdef d out
+    _fortran_zlangt(&out, norm, n, dl, d, du)
+    return out
+cdef zlangt_t *zlangt_f = &_wrap_zlangt
+
+ctypedef void _wzlanhb_t(d *out, char *norm, char *uplo, int *n, int *k, z *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlanhb "F_FUNC(zlanhbwrp, ZLANHBWRP)"(d *out, char *norm, char *uplo, int *n, int *k, z *ab, int *ldab, d *work) nogil
+cdef d _wrap_zlanhb(char *norm, char *uplo, int *n, int *k, z *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_zlanhb(&out, norm, uplo, n, k, ab, ldab, work)
+    return out
+cdef zlanhb_t *zlanhb_f = &_wrap_zlanhb
+
+ctypedef void _wzlanhe_t(d *out, char *norm, char *uplo, int *n, z *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlanhe "F_FUNC(zlanhewrp, ZLANHEWRP)"(d *out, char *norm, char *uplo, int *n, z *a, int *lda, d *work) nogil
+cdef d _wrap_zlanhe(char *norm, char *uplo, int *n, z *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_zlanhe(&out, norm, uplo, n, a, lda, work)
+    return out
+cdef zlanhe_t *zlanhe_f = &_wrap_zlanhe
+
+ctypedef void _wzlanhp_t(d *out, char *norm, char *uplo, int *n, z *ap, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlanhp "F_FUNC(zlanhpwrp, ZLANHPWRP)"(d *out, char *norm, char *uplo, int *n, z *ap, d *work) nogil
+cdef d _wrap_zlanhp(char *norm, char *uplo, int *n, z *ap, d *work) nogil:
+    cdef d out
+    _fortran_zlanhp(&out, norm, uplo, n, ap, work)
+    return out
+cdef zlanhp_t *zlanhp_f = &_wrap_zlanhp
+
+ctypedef void _wzlanhs_t(d *out, char *norm, int *n, z *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlanhs "F_FUNC(zlanhswrp, ZLANHSWRP)"(d *out, char *norm, int *n, z *a, int *lda, d *work) nogil
+cdef d _wrap_zlanhs(char *norm, int *n, z *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_zlanhs(&out, norm, n, a, lda, work)
+    return out
+cdef zlanhs_t *zlanhs_f = &_wrap_zlanhs
+
+ctypedef void _wzlanht_t(d *out, char *norm, int *n, d *d, z *e) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlanht "F_FUNC(zlanhtwrp, ZLANHTWRP)"(d *out, char *norm, int *n, d *d, z *e) nogil
+cdef d _wrap_zlanht(char *norm, int *n, d *d, z *e) nogil:
+    cdef d out
+    _fortran_zlanht(&out, norm, n, d, e)
+    return out
+cdef zlanht_t *zlanht_f = &_wrap_zlanht
+
+ctypedef void _wzlansb_t(d *out, char *norm, char *uplo, int *n, int *k, z *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlansb "F_FUNC(zlansbwrp, ZLANSBWRP)"(d *out, char *norm, char *uplo, int *n, int *k, z *ab, int *ldab, d *work) nogil
+cdef d _wrap_zlansb(char *norm, char *uplo, int *n, int *k, z *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_zlansb(&out, norm, uplo, n, k, ab, ldab, work)
+    return out
+cdef zlansb_t *zlansb_f = &_wrap_zlansb
+
+ctypedef void _wzlansp_t(d *out, char *norm, char *uplo, int *n, z *ap, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlansp "F_FUNC(zlanspwrp, ZLANSPWRP)"(d *out, char *norm, char *uplo, int *n, z *ap, d *work) nogil
+cdef d _wrap_zlansp(char *norm, char *uplo, int *n, z *ap, d *work) nogil:
+    cdef d out
+    _fortran_zlansp(&out, norm, uplo, n, ap, work)
+    return out
+cdef zlansp_t *zlansp_f = &_wrap_zlansp
+
+ctypedef void _wzlansy_t(d *out, char *norm, char *uplo, int *n, z *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlansy "F_FUNC(zlansywrp, ZLANSYWRP)"(d *out, char *norm, char *uplo, int *n, z *a, int *lda, d *work) nogil
+cdef d _wrap_zlansy(char *norm, char *uplo, int *n, z *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_zlansy(&out, norm, uplo, n, a, lda, work)
+    return out
+cdef zlansy_t *zlansy_f = &_wrap_zlansy
+
+ctypedef void _wzlantb_t(d *out, char *norm, char *uplo, char *diag, int *n, int *k, z *ab, int *ldab, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlantb "F_FUNC(zlantbwrp, ZLANTBWRP)"(d *out, char *norm, char *uplo, char *diag, int *n, int *k, z *ab, int *ldab, d *work) nogil
+cdef d _wrap_zlantb(char *norm, char *uplo, char *diag, int *n, int *k, z *ab, int *ldab, d *work) nogil:
+    cdef d out
+    _fortran_zlantb(&out, norm, uplo, diag, n, k, ab, ldab, work)
+    return out
+cdef zlantb_t *zlantb_f = &_wrap_zlantb
+
+ctypedef void _wzlantp_t(d *out, char *norm, char *uplo, char *diag, int *n, z *ap, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlantp "F_FUNC(zlantpwrp, ZLANTPWRP)"(d *out, char *norm, char *uplo, char *diag, int *n, z *ap, d *work) nogil
+cdef d _wrap_zlantp(char *norm, char *uplo, char *diag, int *n, z *ap, d *work) nogil:
+    cdef d out
+    _fortran_zlantp(&out, norm, uplo, diag, n, ap, work)
+    return out
+cdef zlantp_t *zlantp_f = &_wrap_zlantp
+
+ctypedef void _wzlantr_t(d *out, char *norm, char *uplo, char *diag, int *m, int *n, z *a, int *lda, d *work) nogil
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlantr "F_FUNC(zlantrwrp, ZLANTRWRP)"(d *out, char *norm, char *uplo, char *diag, int *m, int *n, z *a, int *lda, d *work) nogil
+cdef d _wrap_zlantr(char *norm, char *uplo, char *diag, int *m, int *n, z *a, int *lda, d *work) nogil:
+    cdef d out
+    _fortran_zlantr(&out, norm, uplo, diag, m, n, a, lda, work)
+    return out
+cdef zlantr_t *zlantr_f = &_wrap_zlantr
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_cbdsqr "F_FUNC(cbdsqr,CBDSQR)"(char *uplo, int *n, int *ncvt, int *nru, int *ncc, s *d, s *e, c *vt, int *ldvt, c *u, int *ldu, c *c, int *ldc, s *rwork, int *info) nogil
 cdef cbdsqr_t *cbdsqr_f = &_fortran_cbdsqr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1083,11 +1614,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cgeequ_t *cgeequ_f = &_fortran_cgeequ
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cgees "F_FUNC(cgees,CGEES)"(char *jobvs, char *sort, cselect1 *select, int *n, c *a, int *lda, int *sdim, c *w, c *vs, int *ldvs, c *work, int *lwork, s *rwork, int *bwork, int *info) nogil
+    void _fortran_cgees "F_FUNC(cgees,CGEES)"(char *jobvs, char *sort, cselect1 *select, int *n, c *a, int *lda, int *sdim, c *w, c *vs, int *ldvs, c *work, int *lwork, s *rwork, bint *bwork, int *info) nogil
 cdef cgees_t *cgees_f = &_fortran_cgees
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cgeesx "F_FUNC(cgeesx,CGEESX)"(char *jobvs, char *sort, cselect1 *select, char *sense, int *n, c *a, int *lda, int *sdim, c *w, c *vs, int *ldvs, s *rconde, s *rcondv, c *work, int *lwork, s *rwork, int *bwork, int *info) nogil
+    void _fortran_cgeesx "F_FUNC(cgeesx,CGEESX)"(char *jobvs, char *sort, cselect1 *select, char *sense, int *n, c *a, int *lda, int *sdim, c *w, c *vs, int *ldvs, s *rconde, s *rcondv, c *work, int *lwork, s *rwork, bint *bwork, int *info) nogil
 cdef cgeesx_t *cgeesx_f = &_fortran_cgeesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1135,7 +1666,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cgelss_t *cgelss_f = &_fortran_cgelss
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cgelsx "F_FUNC(cgelsx,CGELSX)"(int *m, int *n, int *nrhs, c *a, int *lda, c *b, int *ldb, int *jpvt, s *rcond, int *rank_bn, c *work, s *rwork, int *info) nogil
+    void _fortran_cgelsx "F_FUNC(cgelsx,CGELSX)"(int *m, int *n, int *nrhs, c *a, int *lda, c *b, int *ldb, int *jpvt, s *rcond, int *rank, c *work, s *rwork, int *info) nogil
 cdef cgelsx_t *cgelsx_f = &_fortran_cgelsx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1227,11 +1758,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cggbal_t *cggbal_f = &_fortran_cggbal
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cgges "F_FUNC(cgges,CGGES)"(char *jobvsl, char *jobvsr, char *sort, cselect2 *selctg, int *n, c *a, int *lda, c *b, int *ldb, int *sdim, c *alpha, c *beta, c *vsl, int *ldvsl, c *vsr, int *ldvsr, c *work, int *lwork, s *rwork, int *bwork, int *info) nogil
+    void _fortran_cgges "F_FUNC(cgges,CGGES)"(char *jobvsl, char *jobvsr, char *sort, cselect2 *selctg, int *n, c *a, int *lda, c *b, int *ldb, int *sdim, c *alpha, c *beta, c *vsl, int *ldvsl, c *vsr, int *ldvsr, c *work, int *lwork, s *rwork, bint *bwork, int *info) nogil
 cdef cgges_t *cgges_f = &_fortran_cgges
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cggesx "F_FUNC(cggesx,CGGESX)"(char *jobvsl, char *jobvsr, char *sort, cselect2 *selctg, char *sense, int *n, c *a, int *lda, c *b, int *ldb, int *sdim, c *alpha, c *beta, c *vsl, int *ldvsl, c *vsr, int *ldvsr, s *rconde, s *rcondv, c *work, int *lwork, s *rwork, int *iwork, int *liwork, int *bwork, int *info) nogil
+    void _fortran_cggesx "F_FUNC(cggesx,CGGESX)"(char *jobvsl, char *jobvsr, char *sort, cselect2 *selctg, char *sense, int *n, c *a, int *lda, c *b, int *ldb, int *sdim, c *alpha, c *beta, c *vsl, int *ldvsl, c *vsr, int *ldvsr, s *rconde, s *rcondv, c *work, int *lwork, s *rwork, int *iwork, int *liwork, bint *bwork, int *info) nogil
 cdef cggesx_t *cggesx_f = &_fortran_cggesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1239,7 +1770,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cggev_t *cggev_f = &_fortran_cggev
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cggevx "F_FUNC(cggevx,CGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, c *a, int *lda, c *b, int *ldb, c *alpha, c *beta, c *vl, int *ldvl, c *vr, int *ldvr, int *ilo, int *ihi, s *lscale, s *rscale, s *abnrm, s *bbnrm, s *rconde, s *rcondv, c *work, int *lwork, s *rwork, int *iwork, int *bwork, int *info) nogil
+    void _fortran_cggevx "F_FUNC(cggevx,CGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, c *a, int *lda, c *b, int *ldb, c *alpha, c *beta, c *vl, int *ldvl, c *vr, int *ldvr, int *ilo, int *ihi, s *lscale, s *rscale, s *abnrm, s *bbnrm, s *rconde, s *rcondv, c *work, int *lwork, s *rwork, int *iwork, bint *bwork, int *info) nogil
 cdef cggevx_t *cggevx_f = &_fortran_cggevx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1471,7 +2002,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef chptrs_t *chptrs_f = &_fortran_chptrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_chsein "F_FUNC(chsein,CHSEIN)"(char *job, char *eigsrc, char *initv, int *select, int *n, c *h, int *ldh, c *w, c *vl, int *ldvl, c *vr, int *ldvr, int *mm, int *m, c *work, s *rwork, int *ifaill, int *ifailr, int *info) nogil
+    void _fortran_chsein "F_FUNC(chsein,CHSEIN)"(char *side, char *eigsrc, char *initv, bint *select, int *n, c *h, int *ldh, c *w, c *vl, int *ldvl, c *vr, int *ldvr, int *mm, int *m, c *work, s *rwork, int *ifaill, int *ifailr, int *info) nogil
 cdef chsein_t *chsein_f = &_fortran_chsein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1481,6 +2012,18 @@ cdef chseqr_t *chseqr_f = &_fortran_chseqr
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_clacn2 "F_FUNC(clacn2,CLACN2)"(int *n, c *v, c *x, s *est, int *kase, int *isave) nogil
 cdef clacn2_t *clacn2_f = &_fortran_clacn2
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clacon "F_FUNC(clacon,CLACON)"(int *n, c *v, c *x, s *est, int *kase) nogil
+cdef clacon_t *clacon_f = &_fortran_clacon
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clarf "F_FUNC(clarf,CLARF)"(char *side, int *m, int *n, c *v, int *incv, c *tau, c *c, int *ldc, c *work) nogil
+cdef clarf_t *clarf_f = &_fortran_clarf
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_clarz "F_FUNC(clarz,CLARZ)"(char *side, int *m, int *n, int *l, c *v, int *incv, c *tau, c *c, int *ldc, c *work) nogil
+cdef clarz_t *clarz_f = &_fortran_clarz
 
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_claswp "F_FUNC(claswp,CLASWP)"(int *n, c *a, int *lda, int *k1, int *k2, int *ipiv, int *incx) nogil
@@ -1503,7 +2046,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cpbrfs_t *cpbrfs_f = &_fortran_cpbrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cpbstf "F_FUNC(cpbstf,CPBSTF)"(char *uplo, int *n, int *kb, c *bb, int *ldbb, int *info) nogil
+    void _fortran_cpbstf "F_FUNC(cpbstf,CPBSTF)"(char *uplo, int *n, int *kd, c *ab, int *ldab, int *info) nogil
 cdef cpbstf_t *cpbstf_f = &_fortran_cpbstf
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1595,7 +2138,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cpptrs_t *cpptrs_f = &_fortran_cpptrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cptcon "F_FUNC(cptcon,CPTCON)"(int *n, s *d, c *e, s *anorm, s *rcond, s *work, int *info) nogil
+    void _fortran_cptcon "F_FUNC(cptcon,CPTCON)"(int *n, s *d, c *e, s *anorm, s *rcond, s *rwork, int *info) nogil
 cdef cptcon_t *cptcon_f = &_fortran_cptcon
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1679,11 +2222,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef cstegr_t *cstegr_f = &_fortran_cstegr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cstein "F_FUNC(cstein,CSTEIN)"(int *n, s *d, s *e, int *m, s *w, int *iblock, int *isplit, c *z, int *ldz, s *work, int *iwork, int *ifailv, int *info) nogil
+    void _fortran_cstein "F_FUNC(cstein,CSTEIN)"(int *n, s *d, s *e, int *m, s *w, int *iblock, int *isplit, c *z, int *ldz, s *work, int *iwork, int *ifail, int *info) nogil
 cdef cstein_t *cstein_f = &_fortran_cstein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_cstemr "F_FUNC(cstemr,CSTEMR)"(char *jobz, char *range, int *n, s *d, s *e, s *vl, s *vu, int *il, int *iu, int *m, s *w, c *z, int *ldz, int *nzc, int *isuppz, int *tryrac, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_cstemr "F_FUNC(cstemr,CSTEMR)"(char *jobz, char *range, int *n, s *d, s *e, s *vl, s *vu, int *il, int *iu, int *m, s *w, c *z, int *ldz, int *nzc, int *isuppz, bint *tryrac, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef cstemr_t *cstemr_f = &_fortran_cstemr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1743,7 +2286,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ctbtrs_t *ctbtrs_f = &_fortran_ctbtrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctgevc "F_FUNC(ctgevc,CTGEVC)"(char *side, char *howmny, int *select, int *n, c *s, int *lds, c *p, int *ldp, c *vl, int *ldvl, c *vr, int *ldvr, int *mm, int *m, c *work, s *rwork, int *info) nogil
+    void _fortran_ctgevc "F_FUNC(ctgevc,CTGEVC)"(char *side, char *howmny, bint *select, int *n, c *s, int *lds, c *p, int *ldp, c *vl, int *ldvl, c *vr, int *ldvr, int *mm, int *m, c *work, s *rwork, int *info) nogil
 cdef ctgevc_t *ctgevc_f = &_fortran_ctgevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1751,11 +2294,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ctgex2_t *ctgex2_f = &_fortran_ctgex2
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctgexc "F_FUNC(ctgexc,CTGEXC)"(int *wantq, int *wantz, int *n, c *a, int *lda, c *b, int *ldb, c *q, int *ldq, c *z, int *ldz, int *ifst, int *ilst, int *info) nogil
+    void _fortran_ctgexc "F_FUNC(ctgexc,CTGEXC)"(bint *wantq, bint *wantz, int *n, c *a, int *lda, c *b, int *ldb, c *q, int *ldq, c *z, int *ldz, int *ifst, int *ilst, int *info) nogil
 cdef ctgexc_t *ctgexc_f = &_fortran_ctgexc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctgsen "F_FUNC(ctgsen,CTGSEN)"(int *ijob, int *wantq, int *wantz, int *select, int *n, c *a, int *lda, c *b, int *ldb, c *alpha, c *beta, c *q, int *ldq, c *z, int *ldz, int *m, s *pl, s *pr, s *dif, c *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_ctgsen "F_FUNC(ctgsen,CTGSEN)"(int *ijob, bint *wantq, bint *wantz, bint *select, int *n, c *a, int *lda, c *b, int *ldb, c *alpha, c *beta, c *q, int *ldq, c *z, int *ldz, int *m, s *pl, s *pr, s *dif, c *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef ctgsen_t *ctgsen_f = &_fortran_ctgsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1763,7 +2306,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ctgsja_t *ctgsja_f = &_fortran_ctgsja
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctgsna "F_FUNC(ctgsna,CTGSNA)"(char *job, char *howmny, int *select, int *n, c *a, int *lda, c *b, int *ldb, c *vl, int *ldvl, c *vr, int *ldvr, s *s, s *dif, int *mm, int *m, c *work, int *lwork, int *iwork, int *info) nogil
+    void _fortran_ctgsna "F_FUNC(ctgsna,CTGSNA)"(char *job, char *howmny, bint *select, int *n, c *a, int *lda, c *b, int *ldb, c *vl, int *ldvl, c *vr, int *ldvr, s *s, s *dif, int *mm, int *m, c *work, int *lwork, int *iwork, int *info) nogil
 cdef ctgsna_t *ctgsna_f = &_fortran_ctgsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1795,7 +2338,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ctrcon_t *ctrcon_f = &_fortran_ctrcon
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctrevc "F_FUNC(ctrevc,CTREVC)"(char *side, char *howmny, int *select, int *n, c *t, int *ldt, c *vl, int *ldvl, c *vr, int *ldvr, int *mm, int *m, c *work, s *rwork, int *info) nogil
+    void _fortran_ctrevc "F_FUNC(ctrevc,CTREVC)"(char *side, char *howmny, bint *select, int *n, c *t, int *ldt, c *vl, int *ldvl, c *vr, int *ldvr, int *mm, int *m, c *work, s *rwork, int *info) nogil
 cdef ctrevc_t *ctrevc_f = &_fortran_ctrevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -1807,11 +2350,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ctrrfs_t *ctrrfs_f = &_fortran_ctrrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctrsen "F_FUNC(ctrsen,CTRSEN)"(char *job, char *compq, int *select, int *n, c *t, int *ldt, c *q, int *ldq, c *w, int *m, s *s, s *sep, c *work, int *lwork, int *info) nogil
+    void _fortran_ctrsen "F_FUNC(ctrsen,CTRSEN)"(char *job, char *compq, bint *select, int *n, c *t, int *ldt, c *q, int *ldq, c *w, int *m, s *s, s *sep, c *work, int *lwork, int *info) nogil
 cdef ctrsen_t *ctrsen_f = &_fortran_ctrsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ctrsna "F_FUNC(ctrsna,CTRSNA)"(char *job, char *howmny, int *select, int *n, c *t, int *ldt, c *vl, int *ldvl, c *vr, int *ldvr, s *s, s *sep, int *mm, int *m, c *work, int *ldwork, s *rwork, int *info) nogil
+    void _fortran_ctrsna "F_FUNC(ctrsna,CTRSNA)"(char *job, char *howmny, bint *select, int *n, c *t, int *ldt, c *vl, int *ldvl, c *vr, int *ldvr, s *s, s *sep, int *mm, int *m, c *work, int *ldwork, s *rwork, int *info) nogil
 cdef ctrsna_t *ctrsna_f = &_fortran_ctrsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2015,11 +2558,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dgeequ_t *dgeequ_f = &_fortran_dgeequ
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dgees "F_FUNC(dgees,DGEES)"(char *jobvs, char *sort, dselect2 *select, int *n, d *a, int *lda, int *sdim, d *wr, d *wi, d *vs, int *ldvs, d *work, int *lwork, int *bwork, int *info) nogil
+    void _fortran_dgees "F_FUNC(dgees,DGEES)"(char *jobvs, char *sort, dselect2 *select, int *n, d *a, int *lda, int *sdim, d *wr, d *wi, d *vs, int *ldvs, d *work, int *lwork, bint *bwork, int *info) nogil
 cdef dgees_t *dgees_f = &_fortran_dgees
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dgeesx "F_FUNC(dgeesx,DGEESX)"(char *jobvs, char *sort, dselect2 *select, char *sense, int *n, d *a, int *lda, int *sdim, d *wr, d *wi, d *vs, int *ldvs, d *rconde, d *rcondv, d *work, int *lwork, int *iwork, int *liwork, int *bwork, int *info) nogil
+    void _fortran_dgeesx "F_FUNC(dgeesx,DGEESX)"(char *jobvs, char *sort, dselect2 *select, char *sense, int *n, d *a, int *lda, int *sdim, d *wr, d *wi, d *vs, int *ldvs, d *rconde, d *rcondv, d *work, int *lwork, int *iwork, int *liwork, bint *bwork, int *info) nogil
 cdef dgeesx_t *dgeesx_f = &_fortran_dgeesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2035,7 +2578,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dgegs_t *dgegs_f = &_fortran_dgegs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dgegv "F_FUNC(dgegv,DGEGV)"(char *jobvl, char *jobvr, int *n, d *a, int *lda, d *b, int *ldb, d *alpha, d *beta, d *vl, int *ldvl, d *vr, int *ldvr, d *work, int *lwork, s *rwork, int *info) nogil
+    void _fortran_dgegv "F_FUNC(dgegv,DGEGV)"(char *jobvl, char *jobvr, int *n, d *a, int *lda, d *b, int *ldb, d *alphar, d *alphai, d *beta, d *vl, int *ldvl, d *vr, int *ldvr, d *work, int *lwork, int *info) nogil
 cdef dgegv_t *dgegv_f = &_fortran_dgegv
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2067,7 +2610,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dgelss_t *dgelss_f = &_fortran_dgelss
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dgelsx "F_FUNC(dgelsx,DGELSX)"(int *m, int *n, int *nrhs, d *a, int *lda, d *b, int *ldb, int *jpvt, d *rcond, int *rank_bn, d *work, int *info) nogil
+    void _fortran_dgelsx "F_FUNC(dgelsx,DGELSX)"(int *m, int *n, int *nrhs, d *a, int *lda, d *b, int *ldb, int *jpvt, d *rcond, int *rank, d *work, int *info) nogil
 cdef dgelsx_t *dgelsx_f = &_fortran_dgelsx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2159,11 +2702,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dggbal_t *dggbal_f = &_fortran_dggbal
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dgges "F_FUNC(dgges,DGGES)"(char *jobvsl, char *jobvsr, char *sort, dselect3 *selctg, int *n, d *a, int *lda, d *b, int *ldb, int *sdim, d *alphar, d *alphai, d *beta, d *vsl, int *ldvsl, d *vsr, int *ldvsr, d *work, int *lwork, int *bwork, int *info) nogil
+    void _fortran_dgges "F_FUNC(dgges,DGGES)"(char *jobvsl, char *jobvsr, char *sort, dselect3 *selctg, int *n, d *a, int *lda, d *b, int *ldb, int *sdim, d *alphar, d *alphai, d *beta, d *vsl, int *ldvsl, d *vsr, int *ldvsr, d *work, int *lwork, bint *bwork, int *info) nogil
 cdef dgges_t *dgges_f = &_fortran_dgges
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dggesx "F_FUNC(dggesx,DGGESX)"(char *jobvsl, char *jobvsr, char *sort, dselect3 *selctg, char *sense, int *n, d *a, int *lda, d *b, int *ldb, int *sdim, d *alphar, d *alphai, d *beta, d *vsl, int *ldvsl, d *vsr, int *ldvsr, d *rconde, d *rcondv, d *work, int *lwork, int *iwork, int *liwork, int *bwork, int *info) nogil
+    void _fortran_dggesx "F_FUNC(dggesx,DGGESX)"(char *jobvsl, char *jobvsr, char *sort, dselect3 *selctg, char *sense, int *n, d *a, int *lda, d *b, int *ldb, int *sdim, d *alphar, d *alphai, d *beta, d *vsl, int *ldvsl, d *vsr, int *ldvsr, d *rconde, d *rcondv, d *work, int *lwork, int *iwork, int *liwork, bint *bwork, int *info) nogil
 cdef dggesx_t *dggesx_f = &_fortran_dggesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2171,7 +2714,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dggev_t *dggev_f = &_fortran_dggev
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dggevx "F_FUNC(dggevx,DGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, d *a, int *lda, d *b, int *ldb, d *alphar, d *alphai, d *beta, d *vl, int *ldvl, d *vr, int *ldvr, int *ilo, int *ihi, d *lscale, d *rscale, d *abnrm, d *bbnrm, d *rconde, d *rcondv, d *work, int *lwork, int *iwork, int *bwork, int *info) nogil
+    void _fortran_dggevx "F_FUNC(dggevx,DGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, d *a, int *lda, d *b, int *ldb, d *alphar, d *alphai, d *beta, d *vl, int *ldvl, d *vr, int *ldvr, int *ilo, int *ihi, d *lscale, d *rscale, d *abnrm, d *bbnrm, d *rconde, d *rcondv, d *work, int *lwork, int *iwork, bint *bwork, int *info) nogil
 cdef dggevx_t *dggevx_f = &_fortran_dggevx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2235,7 +2778,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dhgeqz_t *dhgeqz_f = &_fortran_dhgeqz
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dhsein "F_FUNC(dhsein,DHSEIN)"(char *job, char *eigsrc, char *initv, int *select, int *n, d *h, int *ldh, d *wr, d *wi, d *vl, int *ldvl, d *vr, int *ldvr, int *mm, int *m, d *work, int *ifaill, int *ifailr, int *info) nogil
+    void _fortran_dhsein "F_FUNC(dhsein,DHSEIN)"(char *side, char *eigsrc, char *initv, bint *select, int *n, d *h, int *ldh, d *wr, d *wi, d *vl, int *ldvl, d *vr, int *ldvr, int *mm, int *m, d *work, int *ifaill, int *ifailr, int *info) nogil
 cdef dhsein_t *dhsein_f = &_fortran_dhsein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2245,6 +2788,22 @@ cdef dhseqr_t *dhseqr_f = &_fortran_dhseqr
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_dlacn2 "F_FUNC(dlacn2,DLACN2)"(int *n, d *v, d *x, int *isgn, d *est, int *kase, int *isave) nogil
 cdef dlacn2_t *dlacn2_f = &_fortran_dlacn2
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlacon "F_FUNC(dlacon,DLACON)"(int *n, d *v, d *x, int *isgn, d *est, int *kase) nogil
+cdef dlacon_t *dlacon_f = &_fortran_dlacon
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlanv2 "F_FUNC(dlanv2,DLANV2)"(d *a, d *b, d *c, d *d, d *rt1r, d *rt1i, d *rt2r, d *rt2i, d *cs, d *sn) nogil
+cdef dlanv2_t *dlanv2_f = &_fortran_dlanv2
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlarf "F_FUNC(dlarf,DLARF)"(char *side, int *m, int *n, d *v, int *incv, d *tau, d *c, int *ldc, d *work) nogil
+cdef dlarf_t *dlarf_f = &_fortran_dlarf
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_dlarz "F_FUNC(dlarz,DLARZ)"(char *side, int *m, int *n, int *l, d *v, int *incv, d *tau, d *c, int *ldc, d *work) nogil
+cdef dlarz_t *dlarz_f = &_fortran_dlarz
 
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_dlaswp "F_FUNC(dlaswp,DLASWP)"(int *n, d *a, int *lda, int *k1, int *k2, int *ipiv, int *incx) nogil
@@ -2371,7 +2930,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dpbrfs_t *dpbrfs_f = &_fortran_dpbrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dpbstf "F_FUNC(dpbstf,DPBSTF)"(char *uplo, int *n, int *kb, d *bb, int *ldbb, int *info) nogil
+    void _fortran_dpbstf "F_FUNC(dpbstf,DPBSTF)"(char *uplo, int *n, int *kd, d *ab, int *ldab, int *info) nogil
 cdef dpbstf_t *dpbstf_f = &_fortran_dpbstf
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2607,11 +3166,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dstegr_t *dstegr_f = &_fortran_dstegr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dstein "F_FUNC(dstein,DSTEIN)"(int *n, d *d, d *e, int *m, d *w, int *iblock, int *isplit, d *z, int *ldz, d *work, int *iwork, int *ifailv, int *info) nogil
+    void _fortran_dstein "F_FUNC(dstein,DSTEIN)"(int *n, d *d, d *e, int *m, d *w, int *iblock, int *isplit, d *z, int *ldz, d *work, int *iwork, int *ifail, int *info) nogil
 cdef dstein_t *dstein_f = &_fortran_dstein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dstemr "F_FUNC(dstemr,DSTEMR)"(char *jobz, char *range, int *n, d *d, d *e, d *vl, d *vu, int *il, int *iu, int *m, d *w, d *z, int *ldz, int *nzc, int *isuppz, int *tryrac, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_dstemr "F_FUNC(dstemr,DSTEMR)"(char *jobz, char *range, int *n, d *d, d *e, d *vl, d *vu, int *il, int *iu, int *m, d *w, d *z, int *ldz, int *nzc, int *isuppz, bint *tryrac, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef dstemr_t *dstemr_f = &_fortran_dstemr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2727,7 +3286,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dtbtrs_t *dtbtrs_f = &_fortran_dtbtrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtgevc "F_FUNC(dtgevc,DTGEVC)"(char *side, char *howmny, int *select, int *n, d *s, int *lds, d *p, int *ldp, d *vl, int *ldvl, d *vr, int *ldvr, int *mm, int *m, d *work, int *info) nogil
+    void _fortran_dtgevc "F_FUNC(dtgevc,DTGEVC)"(char *side, char *howmny, bint *select, int *n, d *s, int *lds, d *p, int *ldp, d *vl, int *ldvl, d *vr, int *ldvr, int *mm, int *m, d *work, int *info) nogil
 cdef dtgevc_t *dtgevc_f = &_fortran_dtgevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2735,11 +3294,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dtgex2_t *dtgex2_f = &_fortran_dtgex2
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtgexc "F_FUNC(dtgexc,DTGEXC)"(int *wantq, int *wantz, int *n, d *a, int *lda, d *b, int *ldb, d *q, int *ldq, d *z, int *ldz, int *ifst, int *ilst, d *work, int *lwork, int *info) nogil
+    void _fortran_dtgexc "F_FUNC(dtgexc,DTGEXC)"(bint *wantq, bint *wantz, int *n, d *a, int *lda, d *b, int *ldb, d *q, int *ldq, d *z, int *ldz, int *ifst, int *ilst, d *work, int *lwork, int *info) nogil
 cdef dtgexc_t *dtgexc_f = &_fortran_dtgexc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtgsen "F_FUNC(dtgsen,DTGSEN)"(int *ijob, int *wantq, int *wantz, int *select, int *n, d *a, int *lda, d *b, int *ldb, d *alphar, d *alphai, d *beta, d *q, int *ldq, d *z, int *ldz, int *m, d *pl, d *pr, d *dif, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_dtgsen "F_FUNC(dtgsen,DTGSEN)"(int *ijob, bint *wantq, bint *wantz, bint *select, int *n, d *a, int *lda, d *b, int *ldb, d *alphar, d *alphai, d *beta, d *q, int *ldq, d *z, int *ldz, int *m, d *pl, d *pr, d *dif, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef dtgsen_t *dtgsen_f = &_fortran_dtgsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2747,7 +3306,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dtgsja_t *dtgsja_f = &_fortran_dtgsja
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtgsna "F_FUNC(dtgsna,DTGSNA)"(char *job, char *howmny, int *select, int *n, d *a, int *lda, d *b, int *ldb, d *vl, int *ldvl, d *vr, int *ldvr, d *s, d *dif, int *mm, int *m, d *work, int *lwork, int *iwork, int *info) nogil
+    void _fortran_dtgsna "F_FUNC(dtgsna,DTGSNA)"(char *job, char *howmny, bint *select, int *n, d *a, int *lda, d *b, int *ldb, d *vl, int *ldvl, d *vr, int *ldvr, d *s, d *dif, int *mm, int *m, d *work, int *lwork, int *iwork, int *info) nogil
 cdef dtgsna_t *dtgsna_f = &_fortran_dtgsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2779,7 +3338,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dtrcon_t *dtrcon_f = &_fortran_dtrcon
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtrevc "F_FUNC(dtrevc,DTREVC)"(char *side, char *howmny, int *select, int *n, d *t, int *ldt, d *vl, int *ldvl, d *vr, int *ldvr, int *mm, int *m, d *work, int *info) nogil
+    void _fortran_dtrevc "F_FUNC(dtrevc,DTREVC)"(char *side, char *howmny, bint *select, int *n, d *t, int *ldt, d *vl, int *ldvl, d *vr, int *ldvr, int *mm, int *m, d *work, int *info) nogil
 cdef dtrevc_t *dtrevc_f = &_fortran_dtrevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2791,11 +3350,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef dtrrfs_t *dtrrfs_f = &_fortran_dtrrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtrsen "F_FUNC(dtrsen,DTRSEN)"(char *job, char *compq, int *select, int *n, d *t, int *ldt, d *q, int *ldq, d *wr, d *wi, int *m, d *s, d *sep, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_dtrsen "F_FUNC(dtrsen,DTRSEN)"(char *job, char *compq, bint *select, int *n, d *t, int *ldt, d *q, int *ldq, d *wr, d *wi, int *m, d *s, d *sep, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef dtrsen_t *dtrsen_f = &_fortran_dtrsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_dtrsna "F_FUNC(dtrsna,DTRSNA)"(char *job, char *howmny, int *select, int *n, d *t, int *ldt, d *vl, int *ldvl, d *vr, int *ldvr, d *s, d *sep, int *mm, int *m, d *work, int *ldwork, int *iwork, int *info) nogil
+    void _fortran_dtrsna "F_FUNC(dtrsna,DTRSNA)"(char *job, char *howmny, bint *select, int *n, d *t, int *ldt, d *vl, int *ldvl, d *vr, int *ldvr, d *s, d *sep, int *mm, int *m, d *work, int *ldwork, int *iwork, int *info) nogil
 cdef dtrsna_t *dtrsna_f = &_fortran_dtrsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2895,11 +3454,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef sgeequ_t *sgeequ_f = &_fortran_sgeequ
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sgees "F_FUNC(sgees,SGEES)"(char *jobvs, char *sort, sselect2 *select, int *n, s *a, int *lda, int *sdim, s *wr, s *wi, s *vs, int *ldvs, s *work, int *lwork, int *bwork, int *info) nogil
+    void _fortran_sgees "F_FUNC(sgees,SGEES)"(char *jobvs, char *sort, sselect2 *select, int *n, s *a, int *lda, int *sdim, s *wr, s *wi, s *vs, int *ldvs, s *work, int *lwork, bint *bwork, int *info) nogil
 cdef sgees_t *sgees_f = &_fortran_sgees
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sgeesx "F_FUNC(sgeesx,SGEESX)"(char *jobvs, char *sort, sselect2 *select, char *sense, int *n, s *a, int *lda, int *sdim, s *wr, s *wi, s *vs, int *ldvs, s *rconde, s *rcondv, s *work, int *lwork, int *iwork, int *liwork, int *bwork, int *info) nogil
+    void _fortran_sgeesx "F_FUNC(sgeesx,SGEESX)"(char *jobvs, char *sort, sselect2 *select, char *sense, int *n, s *a, int *lda, int *sdim, s *wr, s *wi, s *vs, int *ldvs, s *rconde, s *rcondv, s *work, int *lwork, int *iwork, int *liwork, bint *bwork, int *info) nogil
 cdef sgeesx_t *sgeesx_f = &_fortran_sgeesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2915,7 +3474,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef sgegs_t *sgegs_f = &_fortran_sgegs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sgegv "F_FUNC(sgegv,SGEGV)"(char *jobvl, char *jobvr, int *n, s *a, int *lda, s *b, int *ldb, s *alpha, s *beta, s *vl, int *ldvl, s *vr, int *ldvr, s *work, int *lwork, s *rwork, int *info) nogil
+    void _fortran_sgegv "F_FUNC(sgegv,SGEGV)"(char *jobvl, char *jobvr, int *n, s *a, int *lda, s *b, int *ldb, s *alphar, s *alphai, s *beta, s *vl, int *ldvl, s *vr, int *ldvr, s *work, int *lwork, int *info) nogil
 cdef sgegv_t *sgegv_f = &_fortran_sgegv
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -2947,7 +3506,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef sgelss_t *sgelss_f = &_fortran_sgelss
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sgelsx "F_FUNC(sgelsx,SGELSX)"(int *m, int *n, int *nrhs, s *a, int *lda, s *b, int *ldb, int *jpvt, s *rcond, int *rank_bn, s *work, int *info) nogil
+    void _fortran_sgelsx "F_FUNC(sgelsx,SGELSX)"(int *m, int *n, int *nrhs, s *a, int *lda, s *b, int *ldb, int *jpvt, s *rcond, int *rank, s *work, int *info) nogil
 cdef sgelsx_t *sgelsx_f = &_fortran_sgelsx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3039,11 +3598,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef sggbal_t *sggbal_f = &_fortran_sggbal
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sgges "F_FUNC(sgges,SGGES)"(char *jobvsl, char *jobvsr, char *sort, sselect3 *selctg, int *n, s *a, int *lda, s *b, int *ldb, int *sdim, s *alphar, s *alphai, s *beta, s *vsl, int *ldvsl, s *vsr, int *ldvsr, s *work, int *lwork, int *bwork, int *info) nogil
+    void _fortran_sgges "F_FUNC(sgges,SGGES)"(char *jobvsl, char *jobvsr, char *sort, sselect3 *selctg, int *n, s *a, int *lda, s *b, int *ldb, int *sdim, s *alphar, s *alphai, s *beta, s *vsl, int *ldvsl, s *vsr, int *ldvsr, s *work, int *lwork, bint *bwork, int *info) nogil
 cdef sgges_t *sgges_f = &_fortran_sgges
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sggesx "F_FUNC(sggesx,SGGESX)"(char *jobvsl, char *jobvsr, char *sort, sselect3 *selctg, char *sense, int *n, s *a, int *lda, s *b, int *ldb, int *sdim, s *alphar, s *alphai, s *beta, s *vsl, int *ldvsl, s *vsr, int *ldvsr, s *rconde, s *rcondv, s *work, int *lwork, int *iwork, int *liwork, int *bwork, int *info) nogil
+    void _fortran_sggesx "F_FUNC(sggesx,SGGESX)"(char *jobvsl, char *jobvsr, char *sort, sselect3 *selctg, char *sense, int *n, s *a, int *lda, s *b, int *ldb, int *sdim, s *alphar, s *alphai, s *beta, s *vsl, int *ldvsl, s *vsr, int *ldvsr, s *rconde, s *rcondv, s *work, int *lwork, int *iwork, int *liwork, bint *bwork, int *info) nogil
 cdef sggesx_t *sggesx_f = &_fortran_sggesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3051,7 +3610,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef sggev_t *sggev_f = &_fortran_sggev
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sggevx "F_FUNC(sggevx,SGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, s *a, int *lda, s *b, int *ldb, s *alphar, s *alphai, s *beta, s *vl, int *ldvl, s *vr, int *ldvr, int *ilo, int *ihi, s *lscale, s *rscale, s *abnrm, s *bbnrm, s *rconde, s *rcondv, s *work, int *lwork, int *iwork, int *bwork, int *info) nogil
+    void _fortran_sggevx "F_FUNC(sggevx,SGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, s *a, int *lda, s *b, int *ldb, s *alphar, s *alphai, s *beta, s *vl, int *ldvl, s *vr, int *ldvr, int *ilo, int *ihi, s *lscale, s *rscale, s *abnrm, s *bbnrm, s *rconde, s *rcondv, s *work, int *lwork, int *iwork, bint *bwork, int *info) nogil
 cdef sggevx_t *sggevx_f = &_fortran_sggevx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3115,7 +3674,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef shgeqz_t *shgeqz_f = &_fortran_shgeqz
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_shsein "F_FUNC(shsein,SHSEIN)"(char *job, char *eigsrc, char *initv, int *select, int *n, s *h, int *ldh, s *wr, s *wi, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *ifaill, int *ifailr, int *info) nogil
+    void _fortran_shsein "F_FUNC(shsein,SHSEIN)"(char *side, char *eigsrc, char *initv, bint *select, int *n, s *h, int *ldh, s *wr, s *wi, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *ifaill, int *ifailr, int *info) nogil
 cdef shsein_t *shsein_f = &_fortran_shsein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3125,6 +3684,22 @@ cdef shseqr_t *shseqr_f = &_fortran_shseqr
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_slacn2 "F_FUNC(slacn2,SLACN2)"(int *n, s *v, s *x, int *isgn, s *est, int *kase, int *isave) nogil
 cdef slacn2_t *slacn2_f = &_fortran_slacn2
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slacon "F_FUNC(slacon,SLACON)"(int *n, s *v, s *x, int *isgn, s *est, int *kase) nogil
+cdef slacon_t *slacon_f = &_fortran_slacon
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slanv2 "F_FUNC(slanv2,SLANV2)"(s *a, s *b, s *c, s *d, s *rt1r, s *rt1i, s *rt2r, s *rt2i, s *cs, s *sn) nogil
+cdef slanv2_t *slanv2_f = &_fortran_slanv2
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slarf "F_FUNC(slarf,SLARF)"(char *side, int *m, int *n, s *v, int *incv, s *tau, s *c, int *ldc, s *work) nogil
+cdef slarf_t *slarf_f = &_fortran_slarf
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_slarz "F_FUNC(slarz,SLARZ)"(char *side, int *m, int *n, int *l, s *v, int *incv, s *tau, s *c, int *ldc, s *work) nogil
+cdef slarz_t *slarz_f = &_fortran_slarz
 
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_slaswp "F_FUNC(slaswp,SLASWP)"(int *n, s *a, int *lda, int *k1, int *k2, int *ipiv, int *incx) nogil
@@ -3251,7 +3826,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef spbrfs_t *spbrfs_f = &_fortran_spbrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_spbstf "F_FUNC(spbstf,SPBSTF)"(char *uplo, int *n, int *kb, s *bb, int *ldbb, int *info) nogil
+    void _fortran_spbstf "F_FUNC(spbstf,SPBSTF)"(char *uplo, int *n, int *kd, s *ab, int *ldab, int *info) nogil
 cdef spbstf_t *spbstf_f = &_fortran_spbstf
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3483,11 +4058,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef sstegr_t *sstegr_f = &_fortran_sstegr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sstein "F_FUNC(sstein,SSTEIN)"(int *n, s *d, s *e, int *m, s *w, int *iblock, int *isplit, s *z, int *ldz, s *work, int *iwork, int *ifailv, int *info) nogil
+    void _fortran_sstein "F_FUNC(sstein,SSTEIN)"(int *n, s *d, s *e, int *m, s *w, int *iblock, int *isplit, s *z, int *ldz, s *work, int *iwork, int *ifail, int *info) nogil
 cdef sstein_t *sstein_f = &_fortran_sstein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_sstemr "F_FUNC(sstemr,SSTEMR)"(char *jobz, char *range, int *n, s *d, s *e, s *vl, s *vu, int *il, int *iu, int *m, s *w, s *z, int *ldz, int *nzc, int *isuppz, int *tryrac, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_sstemr "F_FUNC(sstemr,SSTEMR)"(char *jobz, char *range, int *n, s *d, s *e, s *vl, s *vu, int *il, int *iu, int *m, s *w, s *z, int *ldz, int *nzc, int *isuppz, bint *tryrac, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef sstemr_t *sstemr_f = &_fortran_sstemr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3603,7 +4178,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef stbtrs_t *stbtrs_f = &_fortran_stbtrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_stgevc "F_FUNC(stgevc,STGEVC)"(char *side, char *howmny, int *select, int *n, s *s, int *lds, s *p, int *ldp, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *info) nogil
+    void _fortran_stgevc "F_FUNC(stgevc,STGEVC)"(char *side, char *howmny, bint *select, int *n, s *s, int *lds, s *p, int *ldp, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *info) nogil
 cdef stgevc_t *stgevc_f = &_fortran_stgevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3611,11 +4186,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef stgex2_t *stgex2_f = &_fortran_stgex2
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_stgexc "F_FUNC(stgexc,STGEXC)"(int *wantq, int *wantz, int *n, s *a, int *lda, s *b, int *ldb, s *q, int *ldq, s *z, int *ldz, int *ifst, int *ilst, s *work, int *lwork, int *info) nogil
+    void _fortran_stgexc "F_FUNC(stgexc,STGEXC)"(bint *wantq, bint *wantz, int *n, s *a, int *lda, s *b, int *ldb, s *q, int *ldq, s *z, int *ldz, int *ifst, int *ilst, s *work, int *lwork, int *info) nogil
 cdef stgexc_t *stgexc_f = &_fortran_stgexc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_stgsen "F_FUNC(stgsen,STGSEN)"(int *ijob, int *wantq, int *wantz, int *select, int *n, s *a, int *lda, s *b, int *ldb, s *alphar, s *alphai, s *beta, s *q, int *ldq, s *z, int *ldz, int *m, s *pl, s *pr, s *dif, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_stgsen "F_FUNC(stgsen,STGSEN)"(int *ijob, bint *wantq, bint *wantz, bint *select, int *n, s *a, int *lda, s *b, int *ldb, s *alphar, s *alphai, s *beta, s *q, int *ldq, s *z, int *ldz, int *m, s *pl, s *pr, s *dif, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef stgsen_t *stgsen_f = &_fortran_stgsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3623,7 +4198,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef stgsja_t *stgsja_f = &_fortran_stgsja
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_stgsna "F_FUNC(stgsna,STGSNA)"(char *job, char *howmny, int *select, int *n, s *a, int *lda, s *b, int *ldb, s *vl, int *ldvl, s *vr, int *ldvr, s *s, s *dif, int *mm, int *m, s *work, int *lwork, int *iwork, int *info) nogil
+    void _fortran_stgsna "F_FUNC(stgsna,STGSNA)"(char *job, char *howmny, bint *select, int *n, s *a, int *lda, s *b, int *ldb, s *vl, int *ldvl, s *vr, int *ldvr, s *s, s *dif, int *mm, int *m, s *work, int *lwork, int *iwork, int *info) nogil
 cdef stgsna_t *stgsna_f = &_fortran_stgsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3655,7 +4230,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef strcon_t *strcon_f = &_fortran_strcon
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_strevc "F_FUNC(strevc,STREVC)"(char *side, char *howmny, int *select, int *n, s *t, int *ldt, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *info) nogil
+    void _fortran_strevc "F_FUNC(strevc,STREVC)"(char *side, char *howmny, bint *select, int *n, s *t, int *ldt, s *vl, int *ldvl, s *vr, int *ldvr, int *mm, int *m, s *work, int *info) nogil
 cdef strevc_t *strevc_f = &_fortran_strevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3667,11 +4242,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef strrfs_t *strrfs_f = &_fortran_strrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_strsen "F_FUNC(strsen,STRSEN)"(char *job, char *compq, int *select, int *n, s *t, int *ldt, s *q, int *ldq, s *wr, s *wi, int *m, s *s, s *sep, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_strsen "F_FUNC(strsen,STRSEN)"(char *job, char *compq, bint *select, int *n, s *t, int *ldt, s *q, int *ldq, s *wr, s *wi, int *m, s *s, s *sep, s *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef strsen_t *strsen_f = &_fortran_strsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_strsna "F_FUNC(strsna,STRSNA)"(char *job, char *howmny, int *select, int *n, s *t, int *ldt, s *vl, int *ldvl, s *vr, int *ldvr, s *s, s *sep, int *mm, int *m, s *work, int *ldwork, int *iwork, int *info) nogil
+    void _fortran_strsna "F_FUNC(strsna,STRSNA)"(char *job, char *howmny, bint *select, int *n, s *t, int *ldt, s *vl, int *ldvl, s *vr, int *ldvr, s *s, s *sep, int *mm, int *m, s *work, int *ldwork, int *iwork, int *info) nogil
 cdef strsna_t *strsna_f = &_fortran_strsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3703,7 +4278,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef xerbla_t *xerbla_f = &_fortran_xerbla
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zbdsqr "F_FUNC(zbdsqr,ZBDSQR)"(char *uplo, int *n, int *ncvt, int *nru, int *ncc, d *d, d *e, z *vt, int *ldvt, z *u, int *ldu, z *c, int *ldc, d *work, int *info) nogil
+    void _fortran_zbdsqr "F_FUNC(zbdsqr,ZBDSQR)"(char *uplo, int *n, int *ncvt, int *nru, int *ncc, d *d, d *e, z *vt, int *ldvt, z *u, int *ldu, z *c, int *ldc, d *rwork, int *info) nogil
 cdef zbdsqr_t *zbdsqr_f = &_fortran_zbdsqr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3775,11 +4350,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zgeequ_t *zgeequ_f = &_fortran_zgeequ
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zgees "F_FUNC(zgees,ZGEES)"(char *jobvs, char *sort, zselect1 *select, int *n, z *a, int *lda, int *sdim, z *w, z *vs, int *ldvs, z *work, int *lwork, d *rwork, int *bwork, int *info) nogil
+    void _fortran_zgees "F_FUNC(zgees,ZGEES)"(char *jobvs, char *sort, zselect1 *select, int *n, z *a, int *lda, int *sdim, z *w, z *vs, int *ldvs, z *work, int *lwork, d *rwork, bint *bwork, int *info) nogil
 cdef zgees_t *zgees_f = &_fortran_zgees
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zgeesx "F_FUNC(zgeesx,ZGEESX)"(char *jobvs, char *sort, zselect1 *select, char *sense, int *n, z *a, int *lda, int *sdim, z *w, z *vs, int *ldvs, d *rconde, d *rcondv, z *work, int *lwork, d *rwork, int *bwork, int *info) nogil
+    void _fortran_zgeesx "F_FUNC(zgeesx,ZGEESX)"(char *jobvs, char *sort, zselect1 *select, char *sense, int *n, z *a, int *lda, int *sdim, z *w, z *vs, int *ldvs, d *rconde, d *rcondv, z *work, int *lwork, d *rwork, bint *bwork, int *info) nogil
 cdef zgeesx_t *zgeesx_f = &_fortran_zgeesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3795,7 +4370,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zgegs_t *zgegs_f = &_fortran_zgegs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zgegv "F_FUNC(zgegv,ZGEGV)"(char *jobvl, char *jobvr, int *n, z *a, int *lda, z *b, int *ldb, z *alpha, z *beta, z *vl, int *ldvl, z *vr, int *ldvr, z *work, int *lwork, s *rwork, int *info) nogil
+    void _fortran_zgegv "F_FUNC(zgegv,ZGEGV)"(char *jobvl, char *jobvr, int *n, z *a, int *lda, z *b, int *ldb, z *alpha, z *beta, z *vl, int *ldvl, z *vr, int *ldvr, z *work, int *lwork, d *rwork, int *info) nogil
 cdef zgegv_t *zgegv_f = &_fortran_zgegv
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3827,7 +4402,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zgelss_t *zgelss_f = &_fortran_zgelss
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zgelsx "F_FUNC(zgelsx,ZGELSX)"(int *m, int *n, int *nrhs, z *a, int *lda, z *b, int *ldb, int *jpvt, d *rcond, int *rank_bn, z *work, d *rwork, int *info) nogil
+    void _fortran_zgelsx "F_FUNC(zgelsx,ZGELSX)"(int *m, int *n, int *nrhs, z *a, int *lda, z *b, int *ldb, int *jpvt, d *rcond, int *rank, z *work, d *rwork, int *info) nogil
 cdef zgelsx_t *zgelsx_f = &_fortran_zgelsx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3919,11 +4494,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zggbal_t *zggbal_f = &_fortran_zggbal
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zgges "F_FUNC(zgges,ZGGES)"(char *jobvsl, char *jobvsr, char *sort, zselect2 *selctg, int *n, z *a, int *lda, z *b, int *ldb, int *sdim, z *alpha, z *beta, z *vsl, int *ldvsl, z *vsr, int *ldvsr, z *work, int *lwork, d *rwork, int *bwork, int *info) nogil
+    void _fortran_zgges "F_FUNC(zgges,ZGGES)"(char *jobvsl, char *jobvsr, char *sort, zselect2 *selctg, int *n, z *a, int *lda, z *b, int *ldb, int *sdim, z *alpha, z *beta, z *vsl, int *ldvsl, z *vsr, int *ldvsr, z *work, int *lwork, d *rwork, bint *bwork, int *info) nogil
 cdef zgges_t *zgges_f = &_fortran_zgges
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zggesx "F_FUNC(zggesx,ZGGESX)"(char *jobvsl, char *jobvsr, char *sort, zselect2 *selctg, char *sense, int *n, z *a, int *lda, z *b, int *ldb, int *sdim, z *alpha, z *beta, z *vsl, int *ldvsl, z *vsr, int *ldvsr, d *rconde, d *rcondv, z *work, int *lwork, d *rwork, int *iwork, int *liwork, int *bwork, int *info) nogil
+    void _fortran_zggesx "F_FUNC(zggesx,ZGGESX)"(char *jobvsl, char *jobvsr, char *sort, zselect2 *selctg, char *sense, int *n, z *a, int *lda, z *b, int *ldb, int *sdim, z *alpha, z *beta, z *vsl, int *ldvsl, z *vsr, int *ldvsr, d *rconde, d *rcondv, z *work, int *lwork, d *rwork, int *iwork, int *liwork, bint *bwork, int *info) nogil
 cdef zggesx_t *zggesx_f = &_fortran_zggesx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -3931,7 +4506,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zggev_t *zggev_f = &_fortran_zggev
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zggevx "F_FUNC(zggevx,ZGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, z *a, int *lda, z *b, int *ldb, z *alpha, z *beta, z *vl, int *ldvl, z *vr, int *ldvr, int *ilo, int *ihi, d *lscale, d *rscale, d *abnrm, d *bbnrm, d *rconde, d *rcondv, z *work, int *lwork, d *rwork, int *iwork, int *bwork, int *info) nogil
+    void _fortran_zggevx "F_FUNC(zggevx,ZGGEVX)"(char *balanc, char *jobvl, char *jobvr, char *sense, int *n, z *a, int *lda, z *b, int *ldb, z *alpha, z *beta, z *vl, int *ldvl, z *vr, int *ldvr, int *ilo, int *ihi, d *lscale, d *rscale, d *abnrm, d *bbnrm, d *rconde, d *rcondv, z *work, int *lwork, d *rwork, int *iwork, bint *bwork, int *info) nogil
 cdef zggevx_t *zggevx_f = &_fortran_zggevx
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4163,7 +4738,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zhptrs_t *zhptrs_f = &_fortran_zhptrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zhsein "F_FUNC(zhsein,ZHSEIN)"(char *job, char *eigsrc, char *initv, int *select, int *n, z *h, int *ldh, z *w, z *vl, int *ldvl, z *vr, int *ldvr, int *mm, int *m, z *work, d *rwork, int *ifaill, int *ifailr, int *info) nogil
+    void _fortran_zhsein "F_FUNC(zhsein,ZHSEIN)"(char *side, char *eigsrc, char *initv, bint *select, int *n, z *h, int *ldh, z *w, z *vl, int *ldvl, z *vr, int *ldvr, int *mm, int *m, z *work, d *rwork, int *ifaill, int *ifailr, int *info) nogil
 cdef zhsein_t *zhsein_f = &_fortran_zhsein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4173,6 +4748,18 @@ cdef zhseqr_t *zhseqr_f = &_fortran_zhseqr
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_zlacn2 "F_FUNC(zlacn2,ZLACN2)"(int *n, z *v, z *x, d *est, int *kase, int *isave) nogil
 cdef zlacn2_t *zlacn2_f = &_fortran_zlacn2
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlacon "F_FUNC(zlacon,ZLACON)"(int *n, z *v, z *x, d *est, int *kase) nogil
+cdef zlacon_t *zlacon_f = &_fortran_zlacon
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlarf "F_FUNC(zlarf,ZLARF)"(char *side, int *m, int *n, z *v, int *incv, z *tau, z *c, int *ldc, z *work) nogil
+cdef zlarf_t *zlarf_f = &_fortran_zlarf
+
+cdef extern from "_lapack_subroutine_wrappers.h":
+    void _fortran_zlarz "F_FUNC(zlarz,ZLARZ)"(char *side, int *m, int *n, int *l, z *v, int *incv, z *tau, z *c, int *ldc, z *work) nogil
+cdef zlarz_t *zlarz_f = &_fortran_zlarz
 
 cdef extern from "_lapack_subroutine_wrappers.h":
     void _fortran_zlaswp "F_FUNC(zlaswp,ZLASWP)"(int *n, z *a, int *lda, int *k1, int *k2, int *ipiv, int *incx) nogil
@@ -4195,7 +4782,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zpbrfs_t *zpbrfs_f = &_fortran_zpbrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zpbstf "F_FUNC(zpbstf,ZPBSTF)"(char *uplo, int *n, int *kb, z *bb, int *ldbb, int *info) nogil
+    void _fortran_zpbstf "F_FUNC(zpbstf,ZPBSTF)"(char *uplo, int *n, int *kd, z *ab, int *ldab, int *info) nogil
 cdef zpbstf_t *zpbstf_f = &_fortran_zpbstf
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4287,7 +4874,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zpptrs_t *zpptrs_f = &_fortran_zpptrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zptcon "F_FUNC(zptcon,ZPTCON)"(int *n, d *d, z *e, d *anorm, d *rcond, d *work, int *info) nogil
+    void _fortran_zptcon "F_FUNC(zptcon,ZPTCON)"(int *n, d *d, z *e, d *anorm, d *rcond, d *rwork, int *info) nogil
 cdef zptcon_t *zptcon_f = &_fortran_zptcon
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4367,11 +4954,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef zstegr_t *zstegr_f = &_fortran_zstegr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zstein "F_FUNC(zstein,ZSTEIN)"(int *n, d *d, d *e, int *m, d *w, int *iblock, int *isplit, z *z, int *ldz, d *work, int *iwork, int *ifailv, int *info) nogil
+    void _fortran_zstein "F_FUNC(zstein,ZSTEIN)"(int *n, d *d, d *e, int *m, d *w, int *iblock, int *isplit, z *z, int *ldz, d *work, int *iwork, int *ifail, int *info) nogil
 cdef zstein_t *zstein_f = &_fortran_zstein
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_zstemr "F_FUNC(zstemr,ZSTEMR)"(char *jobz, char *range, int *n, d *d, d *e, d *vl, d *vu, int *il, int *iu, int *m, d *w, z *z, int *ldz, int *nzc, int *isuppz, int *tryrac, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_zstemr "F_FUNC(zstemr,ZSTEMR)"(char *jobz, char *range, int *n, d *d, d *e, d *vl, d *vu, int *il, int *iu, int *m, d *w, z *z, int *ldz, int *nzc, int *isuppz, bint *tryrac, d *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef zstemr_t *zstemr_f = &_fortran_zstemr
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4431,7 +5018,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ztbtrs_t *ztbtrs_f = &_fortran_ztbtrs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztgevc "F_FUNC(ztgevc,ZTGEVC)"(char *side, char *howmny, int *select, int *n, z *s, int *lds, z *p, int *ldp, z *vl, int *ldvl, z *vr, int *ldvr, int *mm, int *m, z *work, d *rwork, int *info) nogil
+    void _fortran_ztgevc "F_FUNC(ztgevc,ZTGEVC)"(char *side, char *howmny, bint *select, int *n, z *s, int *lds, z *p, int *ldp, z *vl, int *ldvl, z *vr, int *ldvr, int *mm, int *m, z *work, d *rwork, int *info) nogil
 cdef ztgevc_t *ztgevc_f = &_fortran_ztgevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4439,11 +5026,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ztgex2_t *ztgex2_f = &_fortran_ztgex2
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztgexc "F_FUNC(ztgexc,ZTGEXC)"(int *wantq, int *wantz, int *n, z *a, int *lda, z *b, int *ldb, z *q, int *ldq, z *z, int *ldz, int *ifst, int *ilst, int *info) nogil
+    void _fortran_ztgexc "F_FUNC(ztgexc,ZTGEXC)"(bint *wantq, bint *wantz, int *n, z *a, int *lda, z *b, int *ldb, z *q, int *ldq, z *z, int *ldz, int *ifst, int *ilst, int *info) nogil
 cdef ztgexc_t *ztgexc_f = &_fortran_ztgexc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztgsen "F_FUNC(ztgsen,ZTGSEN)"(int *ijob, int *wantq, int *wantz, int *select, int *n, z *a, int *lda, z *b, int *ldb, z *alpha, z *beta, z *q, int *ldq, z *z, int *ldz, int *m, d *pl, d *pr, d *dif, z *work, int *lwork, int *iwork, int *liwork, int *info) nogil
+    void _fortran_ztgsen "F_FUNC(ztgsen,ZTGSEN)"(int *ijob, bint *wantq, bint *wantz, bint *select, int *n, z *a, int *lda, z *b, int *ldb, z *alpha, z *beta, z *q, int *ldq, z *z, int *ldz, int *m, d *pl, d *pr, d *dif, z *work, int *lwork, int *iwork, int *liwork, int *info) nogil
 cdef ztgsen_t *ztgsen_f = &_fortran_ztgsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4451,7 +5038,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ztgsja_t *ztgsja_f = &_fortran_ztgsja
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztgsna "F_FUNC(ztgsna,ZTGSNA)"(char *job, char *howmny, int *select, int *n, z *a, int *lda, z *b, int *ldb, z *vl, int *ldvl, z *vr, int *ldvr, d *s, d *dif, int *mm, int *m, z *work, int *lwork, int *iwork, int *info) nogil
+    void _fortran_ztgsna "F_FUNC(ztgsna,ZTGSNA)"(char *job, char *howmny, bint *select, int *n, z *a, int *lda, z *b, int *ldb, z *vl, int *ldvl, z *vr, int *ldvr, d *s, d *dif, int *mm, int *m, z *work, int *lwork, int *iwork, int *info) nogil
 cdef ztgsna_t *ztgsna_f = &_fortran_ztgsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4483,7 +5070,7 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ztrcon_t *ztrcon_f = &_fortran_ztrcon
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztrevc "F_FUNC(ztrevc,ZTREVC)"(char *side, char *howmny, int *select, int *n, z *t, int *ldt, z *vl, int *ldvl, z *vr, int *ldvr, int *mm, int *m, z *work, d *rwork, int *info) nogil
+    void _fortran_ztrevc "F_FUNC(ztrevc,ZTREVC)"(char *side, char *howmny, bint *select, int *n, z *t, int *ldt, z *vl, int *ldvl, z *vr, int *ldvr, int *mm, int *m, z *work, d *rwork, int *info) nogil
 cdef ztrevc_t *ztrevc_f = &_fortran_ztrevc
 
 cdef extern from "_lapack_subroutine_wrappers.h":
@@ -4495,11 +5082,11 @@ cdef extern from "_lapack_subroutine_wrappers.h":
 cdef ztrrfs_t *ztrrfs_f = &_fortran_ztrrfs
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztrsen "F_FUNC(ztrsen,ZTRSEN)"(char *job, char *compq, int *select, int *n, z *t, int *ldt, z *q, int *ldq, z *w, int *m, d *s, d *sep, z *work, int *lwork, int *info) nogil
+    void _fortran_ztrsen "F_FUNC(ztrsen,ZTRSEN)"(char *job, char *compq, bint *select, int *n, z *t, int *ldt, z *q, int *ldq, z *w, int *m, d *s, d *sep, z *work, int *lwork, int *info) nogil
 cdef ztrsen_t *ztrsen_f = &_fortran_ztrsen
 
 cdef extern from "_lapack_subroutine_wrappers.h":
-    void _fortran_ztrsna "F_FUNC(ztrsna,ZTRSNA)"(char *job, char *howmny, int *select, int *n, z *t, int *ldt, z *vl, int *ldvl, z *vr, int *ldvr, d *s, d *sep, int *mm, int *m, z *work, int *ldwork, d *rwork, int *info) nogil
+    void _fortran_ztrsna "F_FUNC(ztrsna,ZTRSNA)"(char *job, char *howmny, bint *select, int *n, z *t, int *ldt, z *vl, int *ldvl, z *vr, int *ldvr, d *s, d *sep, int *mm, int *m, z *work, int *ldwork, d *rwork, int *info) nogil
 cdef ztrsna_t *ztrsna_f = &_fortran_ztrsna
 
 cdef extern from "_lapack_subroutine_wrappers.h":

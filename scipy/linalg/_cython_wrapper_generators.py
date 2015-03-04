@@ -88,12 +88,20 @@ def make_blas_pyx_preamble(all_sigs):
     names = [sig[0] for sig in all_sigs]
     return blas_pyx_preamble.format("\n- ".join(names))
 
-lapack_pyx_preamble = '''"""LAPACK functions for Cython
+lapack_pyx_preamble = '''"""
+LAPACK functions for Cython
 ===========================
 
 Usable from Cython via::
 
     cimport scipy.linalg.cython_lapack
+
+This module provides Cython-level wrappers for all primary routines included
+in LAPACK 3.1.0 and some of the fixed-api auxiliary routines.
+
+The signature for dcgesv changed from LAPACK 3.1.1 to LAPACK 3.2.0.
+The version here is the newer of the two since it matches the signature
+from later versions of LAPACK and the version in the CLAPACK included in OSX.
 
 Raw function pointers (Fortran-style pointer arguments):
 
@@ -371,14 +379,14 @@ ctypedef double complex z
 
 # Function pointer type declarations for
 # gees and gges families of functions.
-ctypedef int cselect1(c*)
-ctypedef int cselect2(c*, c*)
-ctypedef int dselect2(d*, d*)
-ctypedef int dselect3(d*, d*, d*)
-ctypedef int sselect2(s*, s*)
-ctypedef int sselect3(s*, s*, s*)
-ctypedef int zselect1(z*)
-ctypedef int zselect2(z*, z*)
+ctypedef bint cselect1(c*)
+ctypedef bint cselect2(c*, c*)
+ctypedef bint dselect2(d*, d*)
+ctypedef bint dselect3(d*, d*, d*)
+ctypedef bint sselect2(s*, s*)
+ctypedef bint sselect3(s*, s*, s*)
+ctypedef bint zselect1(z*)
+ctypedef bint zselect2(z*, z*)
 
 """
 
