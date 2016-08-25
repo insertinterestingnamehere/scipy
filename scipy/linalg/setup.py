@@ -10,7 +10,8 @@ def configuration(parent_package='', top_path=None):
     from numpy.distutils.system_info import get_info, NotFoundError, numpy_info
     from numpy.distutils.misc_util import Configuration, get_numpy_include_dirs
     from scipy._build_utils import (get_sgemv_fix, get_g77_abi_wrappers,
-                                    split_fortran_files)
+                                    split_fortran_files,
+                                    get_accelerate_missing_sources)
 
     config = Configuration('linalg', parent_package, top_path)
 
@@ -151,12 +152,20 @@ def configuration(parent_package='', top_path=None):
                          libraries=['fwrappers'],
                          extra_info=lapack_opt)
 
+    accelerate_missing_sources = get_accelerate_missing_sources(lapack_opt)
+    if accelerate_missing_sources:
+        config.add_library('accelerate_missing',
+                           sources=accelerate_missing_sources,
+                           include_dirs=includes)
+        extra_lapack_libs = ['accelerate_missing']
+    else:
+        extra_lapack_libs = []
     config.add_extension('cython_lapack',
                          sources=['cython_lapack.c'],
                          depends=['cython_lapack.pyx', 'cython_lapack.pxd',
                                   'fortran_defs.h', '_lapack_subroutines.h'],
                          include_dirs=['.'],
-                         libraries=['fwrappers'],
+                         libraries=['fwrappers'] + extra_lapack_libs,
                          extra_info=lapack_opt)
 
     config.add_extension('_decomp_update',

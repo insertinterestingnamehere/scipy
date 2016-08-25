@@ -7,7 +7,8 @@ from distutils.dep_util import newer
 
 __all__ = ['needs_g77_abi_wrapper', 'split_fortran_files',
            'get_g77_abi_wrappers',
-           'needs_sgemv_fix', 'get_sgemv_fix']
+           'needs_sgemv_fix', 'get_sgemv_fix',
+           'get_accelerate_missing_sources']
 
 
 def uses_veclib(info):
@@ -100,6 +101,41 @@ def get_sgemv_fix(info):
     else:
         return []
 
+def needs_accelerate_missing(info):
+    """
+    Returns True if LAPACK routines in LAPACK 3.3.1
+    that are not available in LAPACK 3.2.1 need to be
+    provided by SciPy.
+    This is currently used to support the LAPACK 3.3.1
+    interface while still supporting Accelerate even
+    though Accelerate only provides the LAPACK 3.2.1
+    interface.
+    """
+    if uses_accelerate(info) or uses_veclib(info):
+        return True
+    return False
+
+def get_accelerate_missing_sources(info):
+    if needs_accelerate_missing(info):
+        return []
+    accelerate_missing = ["cbbcsd", "cgeqr2p", "cgeqrfp", "cheswapr",
+                          "chetri2", "chetri2x", "chetrs2", "clapmr",
+                          "clarfgp", "csyconv", "csyswapr", "csytri2",
+                          "csytri2x", "csytrs2", "cunbdb", "cuncsd",
+                          "dbbcsd", "dgeqr2p", "dgeqrfp", "dlapmr",
+                          "dlarfgp", "dlartgp", "dlartgs", "dorbdb",
+                          "dorcsd", "dsyconv", "dsyswapr", "dsytri2",
+                          "dsytri2x", "dsytrs2", "sbbcsd", "sgeqr2p",
+                          "sgeqrfp", "slapmr", "slarfgp", "slartgp",
+                          "slartgs", "sorbdb", "sorcsd", "ssyconv",
+                          "ssyswapr", "ssytri2", "ssytri2x", "ssytrs2",
+                          "zbbcsd", "zgeqr2p", "zgeqrfp", "zheswapr",
+                          "zhetri2", "zhetri2x", "zhetrs2", "zlapmr",
+                          "zlarfgp", "zsyconv", "zsyswapr", "zsytri2",
+                          "zsytri2x", "zsytrs2", "zunbdb", "zuncsd"]
+    path = os.path.abspath(os.path.dirname(__file__))
+    return [os.path.join(path, 'src', 'lapack_accelerate_missing', "%s.f" % f)
+            for f in accelerate_missing]
 
 def split_fortran_files(source_dir, subroutines=None):
     """Split each file in `source_dir` into separate files per subroutine.
